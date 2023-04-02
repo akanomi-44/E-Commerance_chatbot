@@ -1,0 +1,81 @@
+[{
+  "_id": {
+    "$oid": "6413d54696946be2b002600f"
+  },
+  "name": "T-Shirt",
+  "color": "Red",
+  "size": "Large",
+  "quantity": 10
+},{
+  "_id": {
+    "$oid": "6413d54696946be2b0026010"
+  },
+  "name": "Jeans",
+  "color": "Blue",
+  "size": "32x34",
+  "quantity": 5
+},{
+  "_id": {
+    "$oid": "6413d54696946be2b0026011"
+  },
+  "name": "Hoodie",
+  "color": "Black",
+  "size": "Medium",
+  "quantity": 20
+},{
+  "_id": {
+    "$oid": "6413d54696946be2b0026012"
+  },
+  "name": "Dress",
+  "color": "Green",
+  "size": "Small",
+  "quantity": 7
+},{
+  "_id": {
+    "$oid": "6413d54696946be2b0026013"
+  },
+  "name": "Sweatpants",
+  "color": "Grey",
+  "size": "Medium",
+  "quantity": 15
+},{
+  "_id": {
+    "$oid": "641d4647d081a0ccd191d0eb"
+  },
+  "name": "T-Shirt",
+  "color": "White",
+  "size": "Small",
+  "quantity": 20
+},{
+  "_id": {
+    "$oid": "641d4647d081a0ccd191d0ec"
+  },
+  "name": "Jeans",
+  "color": "Blue",
+  "size": "XL",
+  "quantity": 5
+},{
+  "_id": {
+    "$oid": "641d4647d081a0ccd191d0ed"
+  },
+  "name": "Shirt",
+  "color": "White",
+  "size": "Medium",
+  "quantity": 15
+},{
+  "_id": {
+    "$oid": "641d4647d081a0ccd191d0ee"
+  },
+  "name": "Dress",
+  "color": "Black",
+  "size": "M",
+  "quantity": 10
+},{
+  "_id": {
+    "$oid": "641d4647d081a0ccd191d0ef"
+  },
+  "name": "Pants",
+  "color": "Grey",
+  "size": "Medium",
+  "quantity": 15
+}]
