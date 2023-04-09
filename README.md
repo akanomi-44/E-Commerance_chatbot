@@ -8,10 +8,10 @@
 
 ## Template request
 ### Product consultation
-Case 1: short and few request:
-    combine old promt and new ```req``` into new prompt and send to openaiAPI
-Case 2: many requests 
-    Use semantic search and select most relevent requests and make them into context. Send new ```req``` with context to openaiAPI
+Case 1: short and few request: <br>
+    combine old promt and new ```req``` into new prompt and send to openaiAPI <br>
+Case 2: many requests <br>
+    Use semantic search and select most relevent requests and make them into context. Send new ```req``` with context to openaiAPI <br>
 ### make a complaint about the product
 sys: Ask for order infomation ? -> check order information -> send notification to store's owner
 ### place an order
