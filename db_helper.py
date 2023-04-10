@@ -73,10 +73,13 @@ class Server:
 
             df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
 
-            if 1: 
+            if 0: 
                 print("======================================================================")
                 print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False))
                 print("======================================================================")
+            if 1:
+                # return df.loc[:][self.embField]
+                return df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index =True)[:][self.embField]
 
     def checkExist(self):
         if self.db.name in self.client.list_database_names():
