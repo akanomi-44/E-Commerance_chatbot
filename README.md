@@ -22,8 +22,8 @@ send notification to store's owner
 check if product is in stock
 
 ## TODO:
--[] Find best suitable template request
--[] Add more testcase 
--[] Request handle
--[] Restrict to clothings consultation
+- [ ] Find best suitable template request
+- [ ] Add more testcase 
+- [ ] Request handle
+- [ ] Restrict to clothings consultation
 
