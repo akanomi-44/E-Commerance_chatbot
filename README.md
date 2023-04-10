@@ -21,4 +21,9 @@ send notification to store's owner
 ### Check product availability
 check if product is in stock
 
+## TODO:
+-[] Find best suitable template request
+-[] Add more testcase 
+-[] Request handle
+-[] Restrict to clothings consultation
 

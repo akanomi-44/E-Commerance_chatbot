@@ -93,4 +93,25 @@ class Server:
             return True
         else:
             return False
+    
+    def getMostRelavant(self,text):
+        if text is None:
+            return 
+        else:
+            text_vec = get_embedding(text, engine="text-embedding-ada-002")
+            
+            df = pd.DataFrame(list(self.collection.find()))
+            
+            # Transform data from string to numpy array in order to calculate 
+            # df['embedding'] = df['embedding'].apply(eval).apply(np.array)
+
+            df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
+
+            if 1: 
+                print("===================================================")
+                print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False))
+                print("===================================================")
+            if 1:
+                # print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField])
+                return df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField]
 

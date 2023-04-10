@@ -49,9 +49,9 @@ def demo(sv: sv.Server):
     
     print("ChatBot: How can i help you today ?")
     # userInput = str(input("How can i help you today: "))
-    userInput = "Hi, I'm looking for a new outfit. Can you help me ?"
+    # userInput = "Hi, I'm looking for a new outfit. Can you help me ?"
     # userInput = "Hi, I'm having some problem with the shirt i bought recently"
-    # userInput = "is this shirt available ?"
+    userInput = "is this shirt available ?"
     print(f"User: {userInput}")
     res = sv.semanticSearch(userInput)
 
