@@ -1,5 +1,3 @@
-from itertools import count
-from os.path import exists
 import pymongo
 import pandas as pd
 import openai
@@ -25,6 +23,10 @@ class Server:
         for item in self.collection.find():
             print(item)
 
+    def toDF(self):
+        df = pd.DataFrame(list(self.collection.find()))
+        return df
+
     def embeddingData(self,field=None):
         '''Add embeded value of req'''
         if field is None:
@@ -35,13 +37,13 @@ class Server:
             df['embedding'] = df[field].apply(lambda x: get_embedding(x , engine='text-embedding-ada-002'))
             
             for doc in self.collection.find():
-                embedding = df.loc[df['id'] == doc['id'], 'embedding'].values[0]
+                embedding = df.loc[df['_id'] == doc['_id'], 'embedding'].values[0]
                 
                 self.collection.update_one({'_id': doc['_id']}, {'$set': {'embedding': embedding}})
 
 
         # tmp
-            df.to_csv("tmp.csv")
+        # df.to_csv("tmp_test.csv")
         # for _,row in df.iterrows():
         #     print(type(row.get('embedding')))
     
@@ -115,3 +117,14 @@ class Server:
                 # print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField])
                 return df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField]
 
+# for testing 
+    def getMostRelavantVec(self,vec):
+        df = pd.DataFrame(list(self.collection.find()))
+        df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, vec))
+
+        if 1: 
+            print("=================================================================")
+            print(df[[self.embField,"similarities","case_no"]].sort_values("similarities", ascending=False))
+            print("=================================================================")
+        if 1:
+            return df[[self.embField,"similarities","case_no"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0]["case_no"]

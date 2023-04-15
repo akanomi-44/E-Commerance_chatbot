@@ -1,0 +1,3 @@
+give recommendation;Case1-consultation
+check availability;Case2-availability
+make order;Case3-order

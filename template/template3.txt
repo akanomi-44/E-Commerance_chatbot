@@ -1,0 +1,3 @@
+suggestion;Case1-consultation
+availability;Case2-availability
+buy;Case3-order
