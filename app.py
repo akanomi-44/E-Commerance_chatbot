@@ -1,6 +1,7 @@
 from flask import Flask, request
 import hmac
 import hashlib
+import db_helper as db
 
 import requests
 app = Flask(__name__)
@@ -21,10 +22,16 @@ appsecret_proof = hmac.new(
     PAGE_ACCESS_TOKEN.encode('utf-8'),
     hashlib.sha256
 ).hexdigest()
+
+##server
+server = db.Server("Store","templateReq")
+
 def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
     the user said. Replace this function with one connected to chatbot."""
-    return "This is a dummy response to '{}'".format(message)
+    #return "This is a dummy response to '{}'".format(message)
+    ressult = server.semanticSearch(message,["case_no"])
+    return "Your request is in {}".format(ressult[0][0])
 
 
 def verify_webhook(req):

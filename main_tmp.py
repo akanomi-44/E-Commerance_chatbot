@@ -6,3 +6,5 @@ if __name__ == "__main__":
     result = server.semanticSearch(userInput,["case_no","similarities"],3)
     for row in result:
         print(row)
+
+    print(result[0][0])

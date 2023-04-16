@@ -23,10 +23,10 @@ if __name__ == "__main__":
     server = db.Server(dbName="Store",collectionName="cusReq")
     server.embField = "req"
     
-    if 1: 
+    if 0: 
         server.dropCollection()
         
-    if 1:
+    if 0:
         case1_data = inputRead("./cases/test_case1.txt","Case1-consultation")
         case2_data = inputRead("./cases/test_case2.txt","Case2-availability")
         case3_data = inputRead("./cases/test_case3.txt","Case3-order")
@@ -34,10 +34,10 @@ if __name__ == "__main__":
         server.addData(case2_data)
         server.addData(case3_data)
         
-    if 1:
+    if 0:
         server.embeddingData("req")
 
-    if 1:
+    if 0:
         print((server.toDF()))
 
     #template
