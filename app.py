@@ -6,6 +6,7 @@ import db_helper as db
 import requests
 
 from dotenv import load_dotenv
+
 import os
 app = Flask(__name__)
 
