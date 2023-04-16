@@ -28,3 +28,8 @@ class BillSchema(Schema):
 class TransactionSchema(Schema):
     bill_id = fields.String()
     total_amount = fields.Float()
+
+class MessageSchema(Schema):
+    message_id = fields.String()
+    user_id = fields.String()
+    text = fields.String()

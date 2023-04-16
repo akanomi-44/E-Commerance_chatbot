@@ -1,14 +1,9 @@
 import openai
 import re
-from pymongo import MongoClient
 import APIkey
 
-# Set up a connection to MongoDB
-mongo_uri = "mongodb://localhost:27017/"
-
-mongo_client = MongoClient(mongo_uri)
-db = mongo_client['LocalDB']
-clothes_collection = db['clothes']
+from handlers.clothHandler import get_cloth
+from db.mongo import db
 
 # Set up a connection to the OpenAI API
 openai.api_key = APIkey.get_key()
@@ -26,7 +21,7 @@ def search_clothes(name=None, color=None, size=None, quantity=None, price=None):
         query['quantity'] = {'$gte': quantity}
     if price:
         query['price'] = {'$lte': price}
-    return list(clothes_collection.find(query))
+    return list(db.clothes.find(query))
 
 
 # Define a function to send a message to the GPT-3 API and retrieve a response
@@ -86,7 +81,7 @@ def handle_message(message):
         return "I found the following clothes that match your search criteria:\n" + "\n".join(result_strings)
 
 
-if __name__ == '__main__':
-    message = 'I want to buy a blue jeans.'
-    result = handle_message(message)
-    print(result)
+# if __name__ == '__main__':
+#     message = 'I want to buy a blue jeans.'
+#     result = handle_message(message)
+#     print(result)

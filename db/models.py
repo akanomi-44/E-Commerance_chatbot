@@ -25,3 +25,9 @@ class Transaction:
     def __init__(self, bill_id, total_amount):
         self.bill_id = bill_id
         self.total_amount = total_amount
+
+class Message:
+    def __init__(self, message_id, user_id, text):
+        self.message_id = message_id
+        self.text = text
+        self.user_id = user_id
