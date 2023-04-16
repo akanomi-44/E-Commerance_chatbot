@@ -73,13 +73,13 @@ def listen():
                 respond(sender_id, text)
 
         return "ok"
-def send_message(recipient_id, text):
-    print("")
+        
+def send_message(recipient_id, message):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
         "message":{
-            "text":text
+            "text":message
         },
         "recipient": {
             'id': recipient_id
@@ -96,6 +96,4 @@ def send_message(recipient_id, text):
         params=auth,
         json=payload
     )
-    print("respond", response)
-    print("json", response.json())
     return response.json()
