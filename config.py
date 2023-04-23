@@ -1,0 +1,16 @@
+import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard_to_guess_secret_key'
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'hard_to_guess_jwt_secret_key'
+    JWT_ACCESS_TOKEN_EXPIRES = 3600
+    MONGODB_SETTINGS = {
+        'db': 'jwt_db',
+        'host': 'localhost',
+        'port': 27017
+    }
+    APP_SECRET = os.getenv("APP_SECRET")
+    FB_API_URL = os.getenv("FB_API_URL")
+    VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+    PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
+    PAGE_ID = os.getenv("PAGE_ID")

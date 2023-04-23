@@ -93,3 +93,4 @@ webencodings==0.5.1
 Werkzeug==2.2.1
 widgetsnbextension==3.6.1
 openai
+flask_jwt_extended
