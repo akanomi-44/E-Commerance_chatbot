@@ -1,5 +1,8 @@
 # Apply chatGPT into Facebook's chatbot for e-comerance
 
+## Install packages
+pip install -r requirements.txt
+
 ## Usage flow
 1. System: "How can i help you to day? "
 2. User sends a request ```req```

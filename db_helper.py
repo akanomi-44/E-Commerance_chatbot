@@ -75,26 +75,6 @@ class Server:
         else:
             return False
         
-    # def semanticSearch(self,text = None):
-    #     if text is None:
-    #         return 
-    #     else:
-    #         text_vec = get_embedding(text, engine="text-embedding-ada-002")
-    #         
-    #         df = pd.DataFrame(list(self.collection.find()))
-    #         
-    #         df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
-    #
-    #         # if 0: 
-    #         #     print("======================================================================")
-    #         #     print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False))
-    #         #     print("======================================================================")
-    #         if 1:
-    #             # return df.loc[:][self.embField]
-    #             """return the value of embeded field"""
-    #             return df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index =True)[:][self.embField]
-    #
-
     def semanticSearch(self, text,returnHeader, n = 1):
         """return a table (list of list) with returnHeader as column and n as numbers of row, sorted by similarity"""
         text_vec = get_embedding(text, engine="text-embedding-ada-002")

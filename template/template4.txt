@@ -1,6 +1,0 @@
-Hi, I'm looking for a [type of clothing]. Can you recommend any good options?;Case1-consultation
-I'm not sure what to wear for [occasion]. Can you help me find something suitable?;Case1-consultation
-Hi, do you have [item] in stock right now?;Case2-availability
-I was wondering if you have any [item] available in [size/color]?;Case2-availability
-I'd like to buy [item]. How do I go about ordering it?;Case3-order
-I'm interested in purchasing [item]. How can I complete my order?;Case3-order

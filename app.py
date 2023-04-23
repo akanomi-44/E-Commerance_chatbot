@@ -4,10 +4,14 @@ import hashlib
 import db_helper as db
 
 import requests
-app = Flask(__name__)
+
+from dotenv import load_dotenv
+
+from handlers.chatgptHandler import handle_chatgpt_message
 
 import os
-from dotenv import load_dotenv
+app = Flask(__name__)
+
 
 load_dotenv()
 
@@ -24,15 +28,18 @@ appsecret_proof = hmac.new(
 ).hexdigest()
 
 ##server
-server = db.Server("Store","templateReq")
 
 def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
     the user said. Replace this function with one connected to chatbot."""
     #return "This is a dummy response to '{}'".format(message)
-    ressult = server.semanticSearch(message,["case_no"])
-    return "Your request is in {}".format(ressult[0][0])
-
+    server = db.Server("Store","templateReq","req")
+    result = server.semanticSearch(message,["case_no","similarities"])
+    # return "Your request is in {}".format(ressult[0][0])
+    if result[0][1] >= 0.8:
+        return result[0][0] #case_no in [Case1-consultation | Case2-availability | Case3-order]
+    else:
+        return False
 
 def verify_webhook(req):
     if req.args.get("hub.verify_token") == VERIFY_TOKEN:
@@ -44,7 +51,10 @@ def respond(sender, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     response = get_bot_response(message)
-    send_message(sender, response)
+    if(response):    
+        send_message(sender, response)
+    else :
+        handle_chatgpt_message(message)
 
 
 def is_user_message(message):
@@ -73,13 +83,13 @@ def listen():
                 respond(sender_id, text)
 
         return "ok"
-def send_message(recipient_id, text):
-    print("")
+        
+def send_message(recipient_id, message):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
         "message":{
-            "text":text
+            "text":message
         },
         "recipient": {
             'id': recipient_id
@@ -96,6 +106,4 @@ def send_message(recipient_id, text):
         params=auth,
         json=payload
     )
-    print("respond", response)
-    print("json", response.json())
     return response.json()
