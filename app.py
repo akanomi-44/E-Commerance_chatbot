@@ -34,7 +34,7 @@ def get_bot_response(message):
     the user said. Replace this function with one connected to chatbot."""
     #return "This is a dummy response to '{}'".format(message)
     server = db.Server("Store","templateReq","req")
-    result = server.semanticSearch(message,["case_no"])
+    result = server.semanticSearch(message,["case_no","similarities"])
     # return "Your request is in {}".format(ressult[0][0])
     if result[0][1] >= 0.8:
         return result[0][0] #case_no in [Case1-consultation | Case2-availability | Case3-order]
