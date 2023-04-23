@@ -8,8 +8,7 @@ from db.mongo import db
 openai.api_key = APIkey.get_key()
 
 # Define a function to send a message to the GPT-3 API and retrieve a response
-def get_gpt3_response(message):
-    prompt = "Please return name, color, size of clothes based on the customer's message (if the value does not exist, please return None):\nCustomer: " + message + "\nClothes:"
+def get_gpt3_response(prompt):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -32,9 +31,12 @@ def extract_search_parameters(response):
 
 
 # Define a function to handle customer messages
-def handle_chatgpt_message(message):
+def handle_chatgpt_message(sender,message):
+    
+    prompt = "Please return name, color, size of clothes based on the customer's message (if the value does not exist, please return None):\nCustomer: " + message + "\nClothes:"
+
     # Send the message to the GPT-3 API and retrieve a response
-    response = get_gpt3_response(message)
+    response = get_gpt3_response(prompt)
  
     return response 
 
