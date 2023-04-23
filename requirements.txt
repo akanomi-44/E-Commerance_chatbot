@@ -7,7 +7,6 @@ backcall==0.2.0
 bcrypt==3.2.2
 beautifulsoup4==4.10.0
 bleach==5.0.1
-bson==0.5.10
 capstone==5.0.0rc2
 certifi==2021.10.8
 cffi==1.15.1
@@ -94,3 +93,8 @@ Werkzeug==2.2.1
 widgetsnbextension==3.6.1
 openai
 flask_jwt_extended
+pandas
+matplotlib
+plotly
+scipy
+scikit-learn

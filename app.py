@@ -1,7 +1,7 @@
 from flask import Flask, request
-from handlers.facebookHandler import verify_webhook, is_user_message, respondHandler
+from handlers.facebookHandler import verify_webhook, is_user_message, handle_facebook_message
 from handlers.authHandler import login, register
-import os
+
 app = Flask(__name__)
 
 
@@ -25,13 +25,15 @@ def listen():
 
     if request.method == 'POST':
         payload = request.json
-        print("Post Payload: ", payload)
-        event = payload['entry'][0]['messaging']
-        for x in event:
-            if is_user_message(x):
-                text = x['message']['text']
-                sender_id = x['sender']['id']
-                respondHandler(sender_id, text)
+        entries =payload['entry'] 
+        
+        for entry in entries:
+            events = entry['messaging']
+            for event in events:
+                if is_user_message(event):
+                    text = event['message']['text']
+                    sender_id = event['sender']['id']
+                    handle_facebook_message(sender_id, text)
 
         return "ok"
     

@@ -2,9 +2,9 @@
 import requests
 import hmac
 import hashlib
-from semanticHandler import semanticCollection
+from .semanticHandler import semanticCollection 
 
-from chatgptHandler import handle_chatgpt_message
+from .chatgptHandler import handle_chatgpt_message
 
 from config import Config
 
@@ -57,7 +57,7 @@ def send_message(recipient_id, message):
         'appsecret_proof': appsecret_proof
     }
 
-    response = requests.post(
+    response =  requests.post(
         f"https://graph.facebook.com/v16.0/{Config.PAGE_ID}/messages",
         params=auth,
         json=payload
@@ -66,12 +66,12 @@ def send_message(recipient_id, message):
 
 
 
-def respondHandler(sender, message):
+def handle_facebook_message(sender_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     response = get_bot_response(message)
     if(response):    
-        send_message(sender, response)
-    else :
-        handle_chatgpt_message(message)
+        return send_message(sender_id, response)
+    return handle_chatgpt_message(sender_id, message)
+
 

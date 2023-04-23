@@ -14,4 +14,4 @@ class Config:
     VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
     PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
     PAGE_ID = os.getenv("PAGE_ID")
-    API_KEY = os.getenv("API_KEY")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
