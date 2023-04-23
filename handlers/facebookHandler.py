@@ -2,6 +2,7 @@
 import requests
 import hmac
 import hashlib
+from semanticHandler import semanticCollection
 
 from chatgptHandler import handle_chatgpt_message
 
@@ -17,8 +18,12 @@ def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
     the user said. Replace this function with one connected to chatbot."""
     #return "This is a dummy response to '{}'".format(message)
-    result = server.semanticSearch(message,["case_no"])
-    return "Your request is in {}".format(result[0][0])
+    col = semanticCollection("templateReq","req")
+    result = col.semanticSearch(message,["case_no","similarities"])
+    if result[0][1] >= 0.8:
+        return result[0][0] #[Case1-consultation | Case2-availability | Case3-order]
+    else:
+        return False
 
 
 def verify_webhook(req):
