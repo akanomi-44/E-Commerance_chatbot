@@ -18,8 +18,8 @@ def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
     the user said. Replace this function with one connected to chatbot."""
     #return "This is a dummy response to '{}'".format(message)
-    col = semanticCollection("templateReq","req")
-    result = col.semanticSearch(message,["case_no","similarities"])
+    col = semanticCollection("classifyReq","req")
+    result = col.semanticSearch(message,["case","similarities"])
     if result[0][1] >= 0.8:
         return result[0][0] #[Case1-consultation | Case2-availability | Case3-order]
     else:

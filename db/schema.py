@@ -11,3 +11,9 @@ class MessageSchema(Schema):
     message_id = fields.String()
     user_id = fields.String()
     text = fields.String()
+
+class ClassifyReqSchema(Schema):
+    _id = fields.UUID()
+    req = fields.String()
+    case = fields.String()
+    embedding = fields.List()

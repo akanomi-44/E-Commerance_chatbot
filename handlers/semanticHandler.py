@@ -10,8 +10,6 @@ openai.api_key = Config.OPENAI_API_KEY
 
 class semanticCollection:
     def __init__(self, collectionName, embField):
-       
-        
         self.client = client
         self.database = self.client[db]
         self.collection = self.database[collectionName]

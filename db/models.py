@@ -43,3 +43,10 @@ class Message:
         self.message_id = message_id
         self.text = text
         self.user_id = user_id
+
+class classifyReq:
+    def __init__(self, _id, req, case, embedding):
+        self._id = _id
+        self.req = req
+        self.case = case
+        self.embedding = embedding
