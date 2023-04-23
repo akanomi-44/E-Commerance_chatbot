@@ -1,7 +1,10 @@
 from pymongo import MongoClient
+from config import Config
 
 
-uri = ""
+host = Config.MONGODB_SETTINGS['host'] 
+port = Config.MONGODB_SETTINGS['port']
+db = Config.MONGODB_SETTINGS['db']
+uri = f"mongodb://{host}:{port}/"  
 
 client = MongoClient(uri)
-db = client['mydatabase']

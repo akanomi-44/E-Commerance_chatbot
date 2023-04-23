@@ -2,9 +2,9 @@
 import requests
 import hmac
 import hashlib
-from semanticHandler import semanticCollection
+from .semanticHandler import semanticCollection 
 
-from chatgptHandler import handle_chatgpt_message
+from .chatgptHandler import handle_chatgpt_message
 
 from config import Config
 

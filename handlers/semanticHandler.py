@@ -3,18 +3,16 @@ import pandas as pd
 import openai
 from openai.embeddings_utils import get_embedding
 from openai.embeddings_utils import cosine_similarity
+from db.mongo import client, db
 from config import Config
 
-openai.api_key = Config.API_KEY
+openai.api_key = Config.OPENAI_API_KEY
 
 class semanticCollection:
     def __init__(self, collectionName, embField):
-        host = Config.MONGODB_SETTINGS['host'] 
-        port = Config.MONGODB_SETTINGS['port']
-        db = Config.MONGODB_SETTINGS['db']
-        client = f"mongodb://{host}:{port}/"  
+       
         
-        self.client = pymongo.MongoClient(client)
+        self.client = client
         self.database = self.client[db]
         self.collection = self.database[collectionName]
         self.embField = embField
