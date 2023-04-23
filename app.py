@@ -34,9 +34,12 @@ def get_bot_response(message):
     the user said. Replace this function with one connected to chatbot."""
     #return "This is a dummy response to '{}'".format(message)
     server = db.Server("Store","templateReq","req")
-    ressult = server.semanticSearch(message,["case_no"])
-    return "Your request is in {}".format(ressult[0][0])
-
+    result = server.semanticSearch(message,["case_no"])
+    # return "Your request is in {}".format(ressult[0][0])
+    if result[0][1] >= 0.8:
+        return result[0][0] #case_no in [Case1-consultation | Case2-availability | Case3-order]
+    else:
+        return False
 
 def verify_webhook(req):
     if req.args.get("hub.verify_token") == VERIFY_TOKEN:
