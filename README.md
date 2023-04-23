@@ -3,6 +3,11 @@
 ## Install packages
 pip install -r requirements.txt
 
+## Add api key
+add openai's API key in .env file
+```
+API_KEY = <your api key> 
+```
 ## Usage flow
 1. System: "How can i help you to day? "
 2. User sends a request ```req```

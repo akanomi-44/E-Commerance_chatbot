@@ -1,4 +1,5 @@
 APIkey.txt
 __pycache__
-temp
+temp.*
 .env
+
