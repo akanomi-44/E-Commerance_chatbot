@@ -1,3 +1,0 @@
-assist with product selection;Case1-consultation
-Check product's availability;Case2-availability
-place an order;Case3-order
