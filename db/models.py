@@ -8,24 +8,6 @@ class User:
         self.phone_number = phone_number
         self.address = address
 
-class Clothes:
-    def __init__(self, name, brand, description, variants):
-        self.name = name
-        self.brand = brand
-        self.description = description
-        self.variants = variants
-
-class Bill:
-    def __init__(self, user_id, clothes_ids, shipping_address):
-        self.user_id = user_id
-        self.clothes_ids = clothes_ids
-        self.shipping_address = shipping_address
-
-class Transaction:
-    def __init__(self, bill_id, total_amount):
-        self.bill_id = bill_id
-        self.total_amount = total_amount
-
 class Message:
     def __init__(self, message_id, user_id, text):
         self.message_id = message_id

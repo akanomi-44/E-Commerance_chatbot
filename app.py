@@ -7,6 +7,8 @@ import requests
 
 from dotenv import load_dotenv
 
+from handlers.chatgptHandler import handle_chatgpt_message
+
 import os
 app = Flask(__name__)
 
@@ -46,7 +48,10 @@ def respond(sender, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     response = get_bot_response(message)
-    send_message(sender, response)
+    if(response):    
+        send_message(sender, response)
+    else :
+        handle_chatgpt_message(message)
 
 
 def is_user_message(message):
