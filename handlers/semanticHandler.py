@@ -15,30 +15,30 @@ class semanticCollection:
         self.collection = self.database[collectionName]
         self.embField = embField
     
-    def addData(self,data: list):
-        '''List of dict as input'''
-        self.collection.insert_many(data)
-    
-    def printData(self):
-        for item in self.collection.find():
-            print(item)
-
-    def toDF(self):
-        df = pd.DataFrame(list(self.collection.find()))
-        return df
-
-    def embeddingData(self,field):
-        '''Add embeded value of req'''
-        if self.embField != field:
-            self.embField = field
-            
-        df = pd.DataFrame(list(self.collection.find()))
-        df['embedding'] = df[field].apply(lambda x: get_embedding(x , engine='text-embedding-ada-002'))
-        
-        for doc in self.collection.find():
-            embedding = df.loc[df['_id'] == doc['_id'], 'embedding'].values[0]
-            
-            self.collection.update_one({'_id': doc['_id']}, {'$set': {'embedding': embedding}})
+    # def addData(self,data: list):
+    #     '''List of dict as input'''
+    #     self.collection.insert_many(data)
+    # 
+    # def printData(self):
+    #     for item in self.collection.find():
+    #         print(item)
+    #
+    # def toDF(self):
+    #     df = pd.DataFrame(list(self.collection.find()))
+    #     return df
+    #
+    # def embeddingData(self,field):
+    #     '''Add embeded value of req'''
+    #     if self.embField != field:
+    #         self.embField = field
+    #         
+    #     df = pd.DataFrame(list(self.collection.find()))
+    #     df['embedding'] = df[field].apply(lambda x: get_embedding(x , engine='text-embedding-ada-002'))
+    #     
+    #     for doc in self.collection.find():
+    #         embedding = df.loc[df['_id'] == doc['_id'], 'embedding'].values[0]
+    #         
+    #         self.collection.update_one({'_id': doc['_id']}, {'$set': {'embedding': embedding}})
     
     def semanticSearch(self, text,returnHeader, n = 1):
         """return a table (list of list) with returnHeader as column and n as numbers of row, sorted by similarity"""

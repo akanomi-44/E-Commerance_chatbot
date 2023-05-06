@@ -31,7 +31,7 @@ def extract_search_parameters(response):
 
 # Define a function to handle customer messages
 def handle_chatgpt_message(sender,message):
-    
+    #TODO: Fix default promt
     prompt = "Please return name, color, size of clothes based on the customer's message (if the value does not exist, please return None):\nCustomer: " + message + "\nClothes:"
 
     # Send the message to the GPT-3 API and retrieve a response
@@ -47,4 +47,3 @@ def handle_chatgpt_message(sender,message):
     #     for result in results:
     #         result_strings.append(f"{result['name']} in {result['color']} color, size {result['size']}, quantity {result['quantity']}, price {result['price']}")
     #     return "I found the following clothes that match your search criteria:\n" + "\n".join(result_strings)
-

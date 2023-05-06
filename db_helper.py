@@ -6,7 +6,6 @@ from openai.embeddings_utils import cosine_similarity
 from config import Config
 
 openai.api_key = Config.OPENAI_API_KEY
-
 #default client (local host)
 # client = pymongo.MongoClient("mongodb://localhost:27017/")
 
