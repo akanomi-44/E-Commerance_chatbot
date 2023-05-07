@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Facebook Login JavaScript Example</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .content {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4267B2;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #385898;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <script>
+    var selectedPageId;
+    var access_token;
+    var page_name;
+
+    function selectPage(pageId, _access_token, name) {
+      // Set the selectedPageId variable and update the UI
+      selectedPageId = pageId;
+      access_token = _access_token;
+      document.getElementById("selectedPageButton").style.display = "inline-block";
+      document.getElementById("selectedPageButton").innerHTML = "Add page " + name + " to gpt-ecommerce server";
+      document.getElementById("selectedPageButton").style.backgroundColor = "#4267B2";
+
+    }
+
+    function add_page_to_app(page_id, page_access_token) {
+      if (page_id) {
+        fetch(`https://graph.facebook.com/v16.0/${page_id}/subscribed_apps`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            app_id: '969470277523176',
+            subscribed_fields: 'messages',
+            access_token: page_access_token
+          })
+        }).then(function (response) {
+          if (response.ok) {
+            console.log('Page info added successfully');
+            document.getElementById("selectedPageButton").style.backgroundColor = "green";
+            document.getElementById("selectedPageButton").innerHTML = "Add page " + name + " successfully";
+          } else {
+            console.log('Error adding page info');
+            document.getElementById("selectedPageButton").style.backgroundColor = "red";
+            document.getElementById("selectedPageButton").innerHTML = "Error adding page " + name;
+          }
+        }).catch(function (error) {
+          console.log('Error adding page info:', error);
+        });
+      } else {
+        document.getElementById("selectedPageButton").style.backgroundColor = "red";
+        document.getElementById("selectedPageButton").innerHTML = "Please choose page you want to add";
+      }
+
+    }
+
+    function sendToSelectedPage() {
+      // Do something with the selected page ID, e.g. post a message
+      console.log('Sending message to page ' + selectedPageId);
+      var payload = {
+        page_access_token: access_token,
+        page_id: selectedPageId
+      };
+      add_page_to_app(selectedPageId, access_token);
+      // Send a POST request to the server
+      fetch('/add_page_info', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        if (response.ok) {
+
+          console.log('Page info added successfully');
+        } else {
+          console.log('Error adding page info');
+        }
+      }).catch(function (error) {
+        console.log('Error adding page info:', error);
+      });
+    }
+
+
+    function statusChangeCallback(response) { // Called with the results from FB.getLoginStatus().
+      console.log('statusChangeCallback');
+      console.log(response); // The current login status of the person.
+      if (response.status === 'connected') { // Logged into your webpage and Facebook.
+        var accessToken = response.authResponse.accessToken;
+        console.log("user access token : ", accessToken);
+        testAPI();
+        document.getElementById('fb-login-button').style.display = 'none';
+        document.getElementById('selectedPageButton').style.display = 'block';
+      } else { // Not logged into your webpage or we are unable to tell.
+        document.getElementById('status').innerHTML = 'Please log ' +
+          'into this webpage.';
+      }
+    }
+
+
+    function checkLoginState() { // Called when a person is finished with the Login Button.
+      FB.getLoginStatus(function (response) { // See the onlogin handler
+        statusChangeCallback(response);
+      });
+    }
+
+
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '969470277523176',
+        cookie: true, // Enable cookies to allow the server to access the session.
+        xfbml: true, // Parse social plugins on this webpage.
+        version: 'v16.0' // Use this Graph API version for this call.
+      });
+
+
+      FB.getLoginStatus(function (response) { // Called after the JS SDK has been initialized.
+        statusChangeCallback(response); // Returns the login status.
+      });
+    };
+
+    function testAPI() { // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+      console.log('Welcome!  Fetching your information.... ');
+      FB.api('/me', function (response) {
+        console.log(response);
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + '!';
+      });
+      FB.api('/me/accounts', function (response) {
+        console.log(response);
+        var pageListHtml = '<h3>Select Page:</h3><ul>';
+        for (var i = 0; i < response.data.length; i++) {
+          pageListHtml += '<li><button onclick="selectPage(\'' + response.data[i].id + '\',\'' + response.data[i]
+            .access_token + '\',\'' + response.data[i].name + '\'' + ')">' + response.data[i]
+            .name + '</button></li>';
+        }
+        pageListHtml += '</ul>';
+        document.getElementById('pageList').innerHTML = pageListHtml;
+      });
+    }
+  </script>
+
+
+  <!-- The JS SDK Login Button -->
+
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="fb-login-button">
+  </fb:login-button>
+
+  <div id="status"></div>
+  <div id="pageList"></div>
+
+
+  <button id="selectedPageButton" onclick="sendToSelectedPage();" style="display: none;">Send to selected page</button>
+
+  <!-- <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout=""
+    data-auto-logout-link="true" data-use-continue-as="false" ></div> -->
+  <!-- Load the JS SDK asynchronously -->
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0"
+    nonce="griegCx0"></script>
+</body>
+
+</html>
