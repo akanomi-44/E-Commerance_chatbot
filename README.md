@@ -11,8 +11,7 @@ API_KEY = <your api key>
 ## Usage flow
 1. System: "How can i help you to day? "
 2. User sends a request ```req```
-3. Process ```req``` and find most relevent template request from database(using semantic search) and confirm it with User
-4. User confirms request and System start processing user's ```req```
+3. Process ```req``` and find most relevent template request from database(using semantic search) and process it with User
 
 ## Template request
 ### Product consultation
@@ -35,5 +34,5 @@ check if product is in stock
 - [x] Find best suitable template request
 - [x] Add more testcase 
 - [x] Request handle
-- [ ] Restrict to clothings consultation
+- [x] Restrict to clothings consultation
 - [x] Automate testing process
