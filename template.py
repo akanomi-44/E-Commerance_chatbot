@@ -1,6 +1,7 @@
+# ADD template to db server
 import db_helper as db
 
-uri = "mongodb+srv://hiiamhoan:dTe4uohXp3BgsLBj@cluster0.spa4890.mongodb.net/?retryWrites=true&w=majority"
+uri = ""
 
 def templateRead(name):
     inputData = []

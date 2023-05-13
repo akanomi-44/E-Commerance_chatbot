@@ -15,3 +15,6 @@ class Config:
     PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
     PAGE_ID = os.getenv("PAGE_ID")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    DB_USER_NAME = os.getenv("DB_USER_NAME")
+    DB_PASS = os.getenv("DB_PASS")
+    DB_CLUSTER = os.getenv("DB_CLUSTER")
