@@ -5,7 +5,7 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'hard_to_guess_jwt_secret_key'
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     MONGODB_SETTINGS = {
-        'db': 'jwt_db',
+        'db': 'Store',
         'host': 'localhost',
         'port': 27017
     }
