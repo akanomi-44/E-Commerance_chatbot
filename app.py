@@ -117,6 +117,7 @@ def set_page_info():
     if request.method == 'POST':
         PAGE_ACCESS_TOKEN = request.json.get("page_access_token")
         PAGE_ID = request.json.get("page_id")
+        user_id = request.json.get("user_id")
         
         url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
         headers = {
@@ -138,7 +139,9 @@ def set_page_info():
             if result is None:
                 collection.insert_one({
                     'page_id': PAGE_ID,
+                    'user_id': user_id,
                     'access_token': PAGE_ACCESS_TOKEN,
+                    'webhook': ''
                 })
             else:
                 collection.update_one({'page_id': PAGE_ID}, {'$set': {'access_token': PAGE_ACCESS_TOKEN}})
@@ -193,12 +196,23 @@ def set_webhook_url():
     query = {'page_id': page_id}
     document = collection.find_one(query)
     if document:
-        document['page_webhook_url'] = page_webhook_url
+        document['webhook'] = page_webhook_url
         collection.update_one(query, {'$set': document})
     else: 
         return jsonify({"error": "Page Id not exist in database."}), 400
     
     return jsonify({"message": "Add successfully."}), 200
+    
+@app.route('/getWebhooks', methods=['GET'])
+def getWebhooks():
+    user_id = request.args.get('user_id')
+
+    query = {'user_id': user_id}
+    document = collection.find(query)
+    if document: 
+        return jsonify(document), 200
+    
+    return jsonify({"error": "user_id not exist in database."}), 400
     
 
 @app.route('/html')
