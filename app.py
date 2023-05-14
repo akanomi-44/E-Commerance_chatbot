@@ -9,6 +9,8 @@ from config import Config
 from db.mongo import client
 import os
 from dotenv import load_dotenv
+import certifi
+import urllib3
 
 load_dotenv()
 
@@ -26,6 +28,25 @@ PAGE_ID = os.getenv("PAGE_ID")
 db = client['Store']
 collection = db['pages']
 
+
+def has_valid_ssl(domain):
+    http = urllib3.PoolManager(
+        cert_reqs='CERT_REQUIRED',
+        ca_certs=certifi.where()
+    )
+    try:
+        response = http.request('GET', domain)
+        if response.status == 200:
+            return True
+        else:
+            return False
+
+    except urllib3.exceptions.SSLError:
+        return False
+    except urllib3.exceptions.HTTPError:
+        return False
+    except urllib3.exceptions.RequestError:
+        return False
 
 def verify_signature(signature, payload):
     expected_signature = 'sha1=' + hmac.new(APP_SECRET.encode(), payload, hashlib.sha1).hexdigest()
@@ -161,6 +182,24 @@ def listen():
 
                 
         return "ok"
+
+@app.route('/set_webhook_url', methods=['POST'])
+def set_webhook_url():
+    page_webhook_url = request.json.get("page_webhook_url")
+    page_id = request.json.get("page_id")
+    if not has_valid_ssl(page_webhook_url):
+       return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
+    
+    query = {'page_id': page_id}
+    document = collection.find_one(query)
+    if document:
+        document['page_webhook_url'] = page_webhook_url
+        collection.update_one(query, {'$set': document})
+    else: 
+        return jsonify({"error": "Page Id not exist in database."}), 400
+    
+    return jsonify({"message": "Add successfully."}), 200
+    
 
 @app.route('/html')
 def index():
