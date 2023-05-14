@@ -97,5 +97,4 @@ matplotlib
 plotly
 scipy
 scikit-learn
-functools
 flask_mongoengine

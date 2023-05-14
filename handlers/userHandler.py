@@ -1,6 +1,5 @@
 from db.mongo import db
 from db.models import *
-from db.schema import *
 
 def create_user(user_data):
     # Deserialize request JSON to User object

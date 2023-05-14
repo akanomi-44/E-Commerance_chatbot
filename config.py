@@ -12,10 +12,8 @@ class Config:
         'port': 27017
     }
     APP_SECRET = os.getenv("APP_SECRET")
-    FB_API_URL = os.getenv("FB_API_URL")
+    APP_ID = os.getenv("APP_ID")
     VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
-    PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
-    PAGE_ID = os.getenv("PAGE_ID")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     DB_USER_NAME = os.getenv("DB_USER_NAME")
     DB_PASS = os.getenv("DB_PASS")

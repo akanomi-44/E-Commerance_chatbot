@@ -7,12 +7,7 @@ from .semanticHandler import semanticCollection
 
 from config import Config
 
-
-
-def get_bot_response(message):
-    """This is just a dummy function, returning a variation of what
-    the user said. Replace this function with one connected to chatbot."""
-    #return "This is a dummy response to '{}'".format(message)
+from db.mongo import pagesCollection
 
 def request_classifyer(message):
     col = semanticCollection("templateReq","req") 
@@ -34,6 +29,12 @@ def request_classifyer(message):
     
 
 
+def verify_signature(signature, payload):
+    expected_signature = 'sha1=' + hmac.new(Config.APP_SECRET.encode(), payload, hashlib.sha1).hexdigest()
+    print(expected_signature)
+    return hmac.compare_digest(signature, expected_signature)
+
+
 def verify_webhook(req):
     if req.args.get("hub.verify_token") == Config.VERIFY_TOKEN:
         return req.args.get("hub.challenge")
@@ -48,41 +49,38 @@ def is_user_message(message):
 
 
 
-def send_message(recipient_id,sender_id, message):
+def send_message(recipient_id, page_id , text ):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
         "message":{
-            "text":message
+            "text":text
         },
         "recipient": {
             'id': recipient_id
         }
-    }
-
-    # page_info = 
+    }   
     
-    appsecret_proof = hmac.new(
-    Config.APP_SECRET.encode('utf-8'),
-    Config.PAGE_ACCESS_TOKEN.encode('utf-8'),
-    hashlib.sha256
-    ).hexdigest()
+    page = pagesCollection.find_one({'page_id': page_id})
+    if not page:
+       return
+    access_token = page['access_token']
 
+                
     auth = {
-        'access_token': Config.PAGE_ACCESS_TOKEN,
-        #'appsecret_proof': appsecret_proof
+        'access_token': access_token,
     }
 
-    response =  requests.post(
-        f"https://graph.facebook.com/v16.0/{sender_id}/messages",
+    response = requests.post(
+        f"https://graph.facebook.com/v16.0/{page_id}/messages",
         params=auth,
         json=payload
     )
+
     return response.json()
 
 
-
-def handle_facebook_message(sender_id,recipient_id,  message):
+def handle_facebook_message(recipient_id, sender_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
@@ -91,19 +89,19 @@ def handle_facebook_message(sender_id,recipient_id,  message):
     match requtest_type:
         case "case_1":
             response = handle_case1(message)
-            return send_message(sender_id, response)
+            return send_message(recipient_id , sender_id, response)
         case "case_2":
             response = handle_case2(message)
-            return send_message(sender_id, response)
+            return send_message(recipient_id , sender_id, response)
         case "case_3":
             response = handle_case3(message)
-            return send_message(sender_id, response)
+            return send_message(recipient_id , sender_id, response)
         case "default":
             response = handle_default(message)
-            return send_message(sender_id, response)
+            return send_message(recipient_id , sender_id, response)
     
     response = "Error: An unexpected error has occurred."
-    return send_message(sender_id, response)
+    return send_message(recipient_id , sender_id, response)
     # response = get_bot_response(message)
     # if(response):    
     #     return send_message(sender_id,recipient_id, response)
