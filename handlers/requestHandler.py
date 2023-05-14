@@ -1,4 +1,5 @@
 from .chatgptHandler import get_gpt3_response, check_relativity
+import requests
 
 def handle_case1(message):
     prompt = f"{message}. Return result as a list"
@@ -16,3 +17,17 @@ def handle_default(message):
         return get_gpt3_response(message)
     else:
         return "Sorry! your request can not be processed"
+
+def send_webhook_message(type, message, client_id, url):
+    payload = {
+        "client_id": client_id,
+        "type":type,
+        "message": message
+    }
+    headers = {
+            'Content-Type': 'application/json'
+        }
+    try:
+        requests.post(url=url, headers=headers, data=payload)
+    except:
+        print(url, "error")
