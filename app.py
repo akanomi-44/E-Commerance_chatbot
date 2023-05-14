@@ -58,19 +58,33 @@ def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
     the user said. Replace this function with one connected to chatbot."""
     return "This is a dummy response to '{}'".format(message)
+from functools import wraps
+from flask import Flask, jsonify, request, render_template
+import jwt
+from handlers.facebookHandler import verify_webhook, is_user_message, handle_facebook_message
+from handlers.authHandler import login, register
+from config import  Config
+
+from dotenv import load_dotenv
+app = Flask(__name__)
 
 
-def verify_webhook(req):
-    if req.args.get("hub.verify_token") == VERIFY_TOKEN:
-        return req.args.get("hub.challenge")
-    else:
-        return "incorrect"
+load_dotenv()
 
-def respond(sender, message, page_id):
-    """Formulate a response to the user and
-    pass it on to a function that sends it."""
-    response = get_bot_response(message)
-    send_message(sender, response, page_id)
+# APP_ID = os.getenv("APP_ID")
+# APP_SECRET = os.getenv("APP_SECRET")
+# FB_API_URL = os.getenv("FB_API_URL")
+# VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+# CALLBACK_URL = os.getenv("CALLBACK_URL")
+# PAGE_INFO = dict()
+# PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
+# PAGE_ID = os.getenv("PAGE_ID")
+# APP_TOKEN = os.getenv("APP_TOKEN")
+
+# ADD_PAGE_URL = 'https://graph.facebook.com/{APP_ID}/subscriptions?access_token=969470277523176%7Cpvw0lLU3YmoSQ0l4aFx3G118vJw'
+
+
+app.config['SECRET_KEY'] = Config.SECRET_KEY
 
 
 def is_user_message(message):

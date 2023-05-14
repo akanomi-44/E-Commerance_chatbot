@@ -7,11 +7,7 @@ from .semanticHandler import semanticCollection
 
 from config import Config
 
-appsecret_proof = hmac.new(
-    Config.APP_SECRET.encode('utf-8'),
-    Config.PAGE_ACCESS_TOKEN.encode('utf-8'),
-    hashlib.sha256
-).hexdigest()
+
 
 def get_bot_response(message):
     """This is just a dummy function, returning a variation of what
@@ -52,7 +48,7 @@ def is_user_message(message):
 
 
 
-def send_message(recipient_id, message):
+def send_message(recipient_id,sender_id, message):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
@@ -64,13 +60,21 @@ def send_message(recipient_id, message):
         }
     }
 
+    # page_info = 
+    
+    appsecret_proof = hmac.new(
+    Config.APP_SECRET.encode('utf-8'),
+    Config.PAGE_ACCESS_TOKEN.encode('utf-8'),
+    hashlib.sha256
+    ).hexdigest()
+
     auth = {
         'access_token': Config.PAGE_ACCESS_TOKEN,
         #'appsecret_proof': appsecret_proof
     }
 
     response =  requests.post(
-        f"https://graph.facebook.com/v16.0/{Config.PAGE_ID}/messages",
+        f"https://graph.facebook.com/v16.0/{sender_id}/messages",
         params=auth,
         json=payload
     )
@@ -78,7 +82,7 @@ def send_message(recipient_id, message):
 
 
 
-def handle_facebook_message(sender_id, message):
+def handle_facebook_message(sender_id,recipient_id,  message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
@@ -100,5 +104,9 @@ def handle_facebook_message(sender_id, message):
     
     response = "Error: An unexpected error has occurred."
     return send_message(sender_id, response)
+    # response = get_bot_response(message)
+    # if(response):    
+    #     return send_message(sender_id,recipient_id, response)
+    # return handle_chatgpt_message(sender_id, message)
 
 
