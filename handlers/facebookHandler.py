@@ -2,7 +2,7 @@ import requests
 import hmac
 import hashlib
 
-from .requestHandler import handle_case1, handle_case3, handle_case2, handle_default
+from .requestHandler import handle_case1, handle_case3, handle_case2, handle_default, send_webhook_message
 from .semanticHandler import semanticCollection 
 
 from config import Config
@@ -86,15 +86,24 @@ def handle_facebook_message(recipient_id, sender_id, message):
     # DONE: Add a classify function
     requtest_type = request_classifyer(message)
     print(f"type {requtest_type}")
+    page = pagesCollection.find_one({'page_id': sender_id})
+    if not page:
+       return
+    webhook = page['webhook']
+
     match requtest_type:
         case "case_1":
             response = handle_case1(message)
             return send_message(recipient_id , sender_id, response)
         case "case_2":
             response = handle_case2(message)
+            if webhook:
+                send_webhook_message(type="order", message=message, recipient_id=recipient_id,url=webhook)
             return send_message(recipient_id , sender_id, response)
         case "case_3":
             response = handle_case3(message)
+            if webhook:
+                send_webhook_message(type="assistant", message=message, recipient_id=recipient_id, url=webhook)
             return send_message(recipient_id , sender_id, response)
         case "default":
             response = handle_default(message)
