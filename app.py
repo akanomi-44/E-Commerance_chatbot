@@ -107,7 +107,8 @@ def set_page_info():
         else:
             jsonify({"error": "Add page failed."}), 400
     except Exception as e: 
-        jsonify({"error": e}), 400
+        print(e)
+        jsonify({"error"}), 400
 
 @app.route("/webhook", methods=['GET', 'POST'])
 def listen():

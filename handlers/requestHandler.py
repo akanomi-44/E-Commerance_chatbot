@@ -18,9 +18,9 @@ def handle_default(message):
     else:
         return "Sorry! your request can not be processed"
 
-def send_webhook_message(type, message, client_id, url):
+def send_webhook_message(type, message, user_id, url):
     payload = {
-        "client_id": client_id,
+        "user_id": user_id,
         "type":type,
         "message": message
     }
