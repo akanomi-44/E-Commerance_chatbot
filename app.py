@@ -5,10 +5,12 @@ import requests
 from config import Config
 from db.mongo import pagesCollection, clientsCollection
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
 app = Flask(__name__)
+cors = CORS(app)
 
 load_dotenv()
 

@@ -98,3 +98,4 @@ plotly
 scipy
 scikit-learn
 flask_mongoengine
+flask-cors
