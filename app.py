@@ -170,8 +170,8 @@ def getWebhooks():
     
     document = list(pagesCollection.find(query))
     if not document:
-        return jsonify({"ok": "true", "data": []}), 200
-    return jsonify(document), 200
+        return jsonify({"ok": "true", "pages": []}), 200
+    return jsonify({'pages':document}), 200
         
 @app.route('/auth/facebook', methods =['POST'])
 def loginUser():
