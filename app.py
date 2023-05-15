@@ -18,15 +18,19 @@ load_dotenv()
 def token_user_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
+        tokenBearer = request.headers.get('Authorization')
+        token =tokenBearer.split(' ')[1]
 
+        print(token)
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, Config.JWT_SECRET_KEY)
+            data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
+            print(data)
             g.user_id = data['user_id'] 
-        except:
+        except Exception as e:
+            print(e)
             return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(*args, **kwargs)
@@ -160,10 +164,13 @@ def getWebhooks():
     user_id = g.user_id
     query = {'user_id': user_id}
     client=  clientsCollection.find_one({'client_id': user_id})
+
     if not client:
         return jsonify({"error": "user_id not exist in database."}), 400
-    document = pagesCollection.find(query)
     
+    document = list(pagesCollection.find(query))
+    if not document:
+        return jsonify({"ok": "true", "data": []}), 200
     return jsonify(document), 200
         
 @app.route('/auth/facebook', methods =['POST'])
@@ -194,6 +201,7 @@ def loginUser():
 
 
 def main():
+    app.debug= True
     app.run()
 
 
