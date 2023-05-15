@@ -19,13 +19,11 @@ def token_user_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         tokenBearer = request.headers.get('Authorization')
-        token =tokenBearer.split(' ')[1]
-
-        print(token)
-        if not token:
+        if not tokenBearer:
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
+            token =tokenBearer.split(' ')[1]
             data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
             print(data)
             g.user_id = data['user_id'] 
@@ -42,12 +40,12 @@ def token_user_required(f):
 def token_webhook_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
-
-        if not token:
+        tokenBearer = request.headers.get('Authorization')
+        if not tokenBearer:
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
+            token =tokenBearer.split(' ')[1]
             data = jwt.decode(token, Config.JWT_SECRET_KEY)
             g.page_id = data['page_id'] 
         except:
