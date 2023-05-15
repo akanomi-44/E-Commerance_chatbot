@@ -10,7 +10,7 @@ from flask_cors import CORS
 from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
 app = Flask(__name__)
-cors = CORS(app)
+# cors = CORS(app)
 
 load_dotenv()
 
@@ -169,7 +169,8 @@ def getWebhooks():
 @app.route('/auth/facebook', methods =['POST'])
 def loginUser():
     access_token = request.json.get("access_token")
-    url = f'https://graph.facebook.com/v16.0/me?access_token=${access_token}&fields=id,name'
+    print(access_token)
+    url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
     headers = {
         'Content-Type': 'application/json'
     }
@@ -177,7 +178,10 @@ def loginUser():
         response = requests.get(url, headers=headers).json()
         user_id = response['id']
         name = response['name']
-        clientsCollection.find_one_and_update({"client_id": user_id }, {'$set': {"name": name, "client_id":user_id}})
+        data = clientsCollection.find_one({"client_id": user_id})
+        if not data:
+            data = clientsCollection.insert_one({"client_id": user_id, "name": name})
+
         token = jwt.encode(
                 {'user_id': user_id, 'name': name},
                 Config.JWT_SECRET_KEY,
