@@ -10,7 +10,7 @@ from flask_cors import CORS
 from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
 app = Flask(__name__)
-# cors = CORS(app)
+cors = CORS(app)
 
 load_dotenv()
 
@@ -24,7 +24,7 @@ def token_user_required(f):
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
+            data = jwt.decode(token, Config.JWT_SECRET_KEY)
             g.user_id = data['user_id'] 
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
@@ -44,7 +44,7 @@ def token_webhook_required(f):
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
+            data = jwt.decode(token, Config.JWT_SECRET_KEY)
             g.page_id = data['page_id'] 
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
