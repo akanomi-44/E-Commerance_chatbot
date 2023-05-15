@@ -70,28 +70,26 @@ def webhook_send_message():
 @app.route("/add_page_info", methods=['POST'])
 @token_user_required
 def set_page_info():
-    if request.method == 'POST':
-        PAGE_ACCESS_TOKEN = request.json.get("page_access_token")
-        PAGE_ID = request.json.get("page_id")
-        user_id = request.json.get("user_id")
-        
-        url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        data = {
-            'app_id': Config.APP_ID,
-            'subscribed_fields': 'messages',
-            'access_token': PAGE_ACCESS_TOKEN 
-        }
 
+    PAGE_ACCESS_TOKEN = request.json.get("page_access_token")
+    PAGE_ID = request.json.get("page_id")
+    user_id = g.user_id 
+    
+    url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'app_id': Config.APP_ID,
+        'subscribed_fields': 'messages',
+        'access_token': PAGE_ACCESS_TOKEN 
+    }
+    try:
         response = requests.post(url, headers=headers, data=data)
 
         if response.status_code == 200:
             result = pagesCollection.find_one({'page_id': PAGE_ID})
-        
 
-            print(result)
             if result is None:
                 pagesCollection.insert_one({
                     'page_id': PAGE_ID,
@@ -104,8 +102,8 @@ def set_page_info():
             return jsonify({"message": "Page info added successfully."}), 200
         else:
             jsonify({"error": "Add page failed."}), 400
-    else:
-        return jsonify({"error": "Unsupported request method."}), 400
+    except Exception as e: 
+        jsonify({"error": e}), 400
 
 @app.route("/webhook", methods=['GET', 'POST'])
 def listen():
