@@ -50,7 +50,7 @@ def token_webhook_required(f):
 
         try:
             token =tokenBearer.split(' ')[1]
-            data = jwt.decode(token, Config.JWT_SECRET_KEY)
+            data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
             g.page_id = data['page_id'] 
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
@@ -63,12 +63,15 @@ def token_webhook_required(f):
 @token_webhook_required
 def webhook_send_message():
     page_id = g.page_id
+
     text= request.json['text']
     user_id =request.json['user_id']
+    print(text, user_id)
     try:
-        send_message(user_id=user_id, page_id=page_id, text=text)
+        send_message(recipient_id=user_id, page_id=page_id, text=text)
         return jsonify({"ok: true"}), 200
-    except: 
+    except Exception as e:
+        print(e) 
         return jsonify({'message': 'Internal server error'}), 503
 
 @app.route("/add_page_info", methods=['POST'])
@@ -141,7 +144,7 @@ def listen():
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
 def set_webhook_url():
-    body =  request.json.get("body")
+    body = json.loads( request.json.get("body"))
     page_webhook_url = body["page_webhook_url"].strip()
     page_id = body["page_id"].strip()
     res  =has_valid_ssl(page_webhook_url)
@@ -207,7 +210,6 @@ def loginUser():
 
 
 def main():
-    app.debug= True
     app.run()
 
 
