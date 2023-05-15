@@ -11,3 +11,4 @@ client = MongoClient(uri)
 db = client['Store']
 pagesCollection = db['pages']
 clientsCollection = db['clients']
+templateReqCollection = db['templateReq']

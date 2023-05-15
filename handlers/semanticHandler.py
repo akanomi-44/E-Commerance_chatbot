@@ -3,16 +3,14 @@ import pandas as pd
 import openai
 from openai.embeddings_utils import get_embedding
 from openai.embeddings_utils import cosine_similarity
-from db.mongo import client, db
+from db.mongo import client, db, templateReqCollection
 from config import Config
 
 openai.api_key = Config.OPENAI_API_KEY
 
 class semanticCollection:
     def __init__(self, collectionName, embField):
-        self.client = client
-        self.database = self.client[db]
-        self.collection = self.database[collectionName]
+        self.collection = templateReqCollection
         self.embField = embField
     
     # def addData(self,data: list):
