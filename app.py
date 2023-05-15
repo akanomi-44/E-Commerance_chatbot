@@ -75,8 +75,9 @@ def webhook_send_message():
 @token_user_required
 def set_page_info():
 
-    PAGE_ACCESS_TOKEN = request.json.get("page_access_token")
-    PAGE_ID = request.json.get("page_id")
+    body = json.loads(request.json.get("body"))
+    PAGE_ACCESS_TOKEN = body['page_access_token']
+    PAGE_ID = body['page_id']
     user_id = g.user_id 
     
     url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
@@ -105,10 +106,11 @@ def set_page_info():
                 pagesCollection.update_one({'page_id': PAGE_ID}, {'$set': {'access_token': PAGE_ACCESS_TOKEN}})
             return jsonify({"message": "Page info added successfully."}), 200
         else:
-            jsonify({"error": "Add page failed."}), 400
+            print(response.json())
+            return jsonify({"error": "Failed to install app"}), 400
     except Exception as e: 
         print(e)
-        jsonify({"error"}), 400
+        return jsonify({"error":"fail"}), 400
 
 @app.route("/webhook", methods=['GET', 'POST'])
 def listen():
