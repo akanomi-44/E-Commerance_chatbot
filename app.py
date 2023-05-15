@@ -1,3 +1,7 @@
+
+from bson import json_util, ObjectId
+import json
+
 from functools import wraps
 from flask import Flask, g, request, jsonify
 import jwt
@@ -167,7 +171,7 @@ def getWebhooks():
     document = list(pagesCollection.find(query))
     if not document:
         return jsonify({"ok": "true", "pages": []}), 200
-    return jsonify({'pages':document}), 200
+    return jsonify({'pages':json.loads(json_util.dumps(document))}), 200
         
 @app.route('/auth/facebook', methods =['POST'])
 def loginUser():
