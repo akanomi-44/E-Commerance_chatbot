@@ -28,6 +28,6 @@ def send_webhook_message(type, message, user_id, url):
             'Content-Type': 'application/json'
         }
     try:
-        requests.post(url=url, headers=headers, data=payload)
+        requests.post(url=url, headers=headers, json=payload)
     except:
         print(url, "error")
