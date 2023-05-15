@@ -138,9 +138,11 @@ def listen():
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
 def set_webhook_url():
-    page_webhook_url = request.json.get("page_webhook_url")
-    page_id = request.json.get("page_id")
-    if not has_valid_ssl(page_webhook_url):
+    page_webhook_url = request.json.get("page_webhook_url").strip()
+    page_id = request.json.get("page_id").strip()
+    res  =has_valid_ssl(page_webhook_url)
+
+    if not res:
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
     query = {'page_id': page_id}
