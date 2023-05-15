@@ -141,8 +141,9 @@ def listen():
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
 def set_webhook_url():
-    page_webhook_url = request.json.get("page_webhook_url").strip()
-    page_id = request.json.get("page_id").strip()
+    body =  request.json.get("body")
+    page_webhook_url = body["page_webhook_url"].strip()
+    page_id = body["page_id"].strip()
     res  =has_valid_ssl(page_webhook_url)
 
     if not res:
