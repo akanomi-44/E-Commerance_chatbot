@@ -1,4 +1,4 @@
-from config import uri
+from db.mongo import uri
 import subprocess
 import os
 import sys
