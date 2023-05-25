@@ -49,7 +49,7 @@ def is_user_message(message):
 
 
 
-def send_message(recipient_id, page_id , text ):
+def send_message(recipient_id, page_id , text ,access_token):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
@@ -60,12 +60,6 @@ def send_message(recipient_id, page_id , text ):
             'id': recipient_id
         }
     }   
-    
-    page = pagesCollection.find_one({'page_id': page_id})
-    if not page:
-       return
-    access_token = page['access_token']
-
                 
     auth = {
         'access_token': access_token,
@@ -84,33 +78,33 @@ def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
-    requtest_type = request_classifyer(message)
-    print(f"type {requtest_type}")
     page = pagesCollection.find_one({'page_id': page_id})
     if not page:
        return
     webhook = page['webhook']
-
+    access_token = page['access_token']
+    requtest_type = request_classifyer(message)
+    print(f"type {requtest_type}")
     match requtest_type:
         case "case_1":
             response = handle_case1(message)
-            return send_message(user_id , page_id, response)
+            return send_message(user_id , page_id, response, access_token)
         case "case_2":
             response = handle_case2(message)
             if webhook:
                 send_webhook_message(type="order", message=message, user_id=user_id,url=webhook)
-            return send_message(user_id , page_id, response)
+            return send_message(user_id , page_id, response, access_token)
         case "case_3":
             response = handle_case3(message)
             if webhook:
                 send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook)
-            return send_message(user_id , page_id, response)
+            return send_message(user_id , page_id, response, access_token)
         case "default":
             response = handle_default(message)
-            return send_message(user_id , page_id, response)
+            return send_message(user_id , page_id, response, access_token)
     
     response = "Error: An unexpected error has occurred."
-    return send_message(user_id , page_id, response)
+    return send_message(user_id , page_id, response, access_token)
     # response = get_bot_response(message)
     # if(response):    
     #     return send_message(sender_id,recipient_id, response)
