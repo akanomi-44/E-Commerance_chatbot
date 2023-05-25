@@ -1,3 +1,4 @@
+import aiohttp
 from .chatgptHandler import get_gpt3_response
 import requests
 
@@ -19,7 +20,7 @@ def handle_default(message, field):
     else:
         return f"I can only process request that is in following cases:\n\n 1. Recommendation: Can you recommend some clothes for [event] ?,...  \n\n 2. Make an order: Where can i order this [item],... \n\n 3. Contact human assistant: Contact the manager,... \n\n 4. Answer related questions: What is the fashion trend of the 90s ?,... ?"
 
-def send_webhook_message(type, message, user_id, url):
+async def send_webhook_message( type, message, user_id, url):
     payload = {
         "user_id": user_id,
         "type":type,
@@ -28,7 +29,7 @@ def send_webhook_message(type, message, user_id, url):
     headers = {
             'Content-Type': 'application/json'
         }
-    try:
-        requests.post(url=url, headers=headers, json=payload)
-    except:
-        print(url, "error")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=payload, headers=headers) as response:
+            result = await response.json()
+            return result
