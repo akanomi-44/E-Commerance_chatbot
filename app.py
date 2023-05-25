@@ -1,4 +1,5 @@
 
+import asyncio
 from bson import json_util
 import json
 
@@ -22,7 +23,7 @@ load_dotenv()
 
 def token_user_required(f):
     @wraps(f)
-    def decorated(*args, **kwargs):
+    async def decorated(*args, **kwargs):
         tokenBearer = request.headers.get('Authorization')
         if not tokenBearer:
             return jsonify({'message': 'Token is missing!'}), 401
@@ -30,13 +31,12 @@ def token_user_required(f):
         try:
             token =tokenBearer.split(' ')[1]
             data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
-            print(data)
-            g.user_id = data['user_id'] 
+            g.user_id = data['user_id']
         except Exception as e:
             print(e)
             return jsonify({'message': 'Token is invalid!'}), 401
 
-        return f(*args, **kwargs)
+        return await f(*args, **kwargs)
 
     return decorated
 
@@ -44,7 +44,7 @@ def token_user_required(f):
 
 def token_webhook_required(f):
     @wraps(f)
-    def decorated(*args, **kwargs):
+    async def decorated(*args, **kwargs):
         tokenBearer = request.headers.get('Authorization')
         if not tokenBearer:
             return jsonify({'message': 'Token is missing!'}), 401
@@ -56,7 +56,7 @@ def token_webhook_required(f):
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 
-        return f(*args, **kwargs)
+        return await f(*args, **kwargs)
 
     return decorated
 
@@ -170,17 +170,17 @@ async def set_webhook_url():
 @app.route('/getWebhooks', methods=['GET'])
 @token_user_required
 async def getWebhooks():
-    user_id = g.user_id
-    query = {'user_id': user_id}
-    client= await  db.find_one_document('clients',{'client_id': user_id})
+    try: 
+        user_id = g.user_id
+        client,document = await asyncio.gather(db.find_one_document('clients', {'client_id': user_id}),db.find_documents('pages',{'user_id': user_id}))
+        if not client:
+            return jsonify({"error": "user_id not exist in database."}), 400  
+        if not document:
+            return jsonify({"ok": "true", "pages": []}), 200
 
-    if not client:
-        return jsonify({"error": "user_id not exist in database."}), 400
-    
-    document = await db.find_documents('pages',query)
-    if not document:
-        return jsonify({"ok": "true", "pages": []}), 200
-    return jsonify({'pages':json.loads(json_util.dumps(document))}), 200
+        return jsonify({'pages':json.loads(json_util.dumps(document))}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
         
 @app.route('/auth/facebook', methods =['POST'])
 async def loginUser():
@@ -207,9 +207,5 @@ async def loginUser():
         return jsonify({'message': 'Authentication failed'}), 401
 
 
-def main():
-    app.run(host='0.0.0.0', port=5000)
-
-
 if __name__ == "__main__":
-    main()
+    app.run(host='0.0.0.0', port=5000)
