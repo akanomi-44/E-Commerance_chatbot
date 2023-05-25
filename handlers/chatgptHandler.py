@@ -9,22 +9,10 @@ def get_gpt3_response(prompt):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=1024,
+        max_tokens=100,
         n=1,
         stop=None,
-        temperature=0,
-    )
-    return response.choices[0].text
-
-def check_relativity(message):
-    prompt = f"{message}. Is this sentence related to clothings ?. return 'Y' or 'N' as answer."
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0,
+        temperature=0.2,
     )
     res = response.choices[0].text
     return ' '.join(res.strip().split())
