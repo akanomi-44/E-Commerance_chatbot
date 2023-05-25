@@ -9,7 +9,7 @@ def handle_case2(message):
     return f"You can make an order here: <e-com platform links>"
 
 def handle_case3(message):
-    return "Someone will contact with you shortly"
+    return "I have notified Store Owner. In the meantime if you have any questions please let me know"
     
 def handle_default(message, field):
     prompt = f"User: {message}. Give me a response with {field} suggestions or details if related else answer only 'No'"
