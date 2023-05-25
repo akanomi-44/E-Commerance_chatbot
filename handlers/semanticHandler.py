@@ -1,5 +1,6 @@
 import pymongo
 import pandas as pd
+import asyncio
 import openai
 from openai.embeddings_utils import get_embedding
 from openai.embeddings_utils import cosine_similarity
@@ -38,10 +39,27 @@ class semanticCollection:
     #         
     #         self.collection.update_one({'_id': doc['_id']}, {'$set': {'embedding': embedding}})
     
-    def semanticSearch(self, text,returnHeader, n = 1):
+    # def semanticSearch(self, text,returnHeader, n = 1):
+    #     """return a table (list of list) with returnHeader as column and n as numbers of row, sorted by similarity"""
+    #     text_vec = get_embedding(text, engine="text-embedding-ada-002")
+    #     df = pd.DataFrame(list(self.collection.find()))
+        
+    #     df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
+        
+    #     result = []
+    #     for i in range(0,n):
+    #         """return the value of embeded field"""
+    #         result.append(df.sort_values("similarities", ascending=False, ignore_index =True).iloc[i][returnHeader].tolist())
+    #     return result
+    async def semanticSearch(self, text,returnHeader, n = 1):
         """return a table (list of list) with returnHeader as column and n as numbers of row, sorted by similarity"""
-        text_vec = get_embedding(text, engine="text-embedding-ada-002")
-        df = pd.DataFrame(list(self.collection.find()))
+        text_vec_task = asyncio.ensure_future(get_embedding(text, engine="text-embedding-ada-002"))
+        dataframe_task = asyncio.ensure_future(pd.DataFrame(list(self.collection.find())))
+
+        await asyncio.gather(text_vec_task, dataframe_task)
+
+        text_vec = text_vec_task.result()
+        df = dataframe_task.result()
         
         df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
         
@@ -50,4 +68,3 @@ class semanticCollection:
             """return the value of embeded field"""
             result.append(df.sort_values("similarities", ascending=False, ignore_index =True).iloc[i][returnHeader].tolist())
         return result
-        
