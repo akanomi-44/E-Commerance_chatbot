@@ -76,11 +76,12 @@ async def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
-    page = db.find_one_document("pages" ,{'page_id': page_id})
+    page = await db.find_one_document("pages" ,{'page_id': page_id})
     if not page:
        return
     webhook = page['webhook']
     access_token = page['access_token']
+    field = page['field'] if 'field' in page else 'clothings'
     requtest_type = await request_classifyer(message)
     print(f"type {requtest_type}")
     match requtest_type:
@@ -98,7 +99,7 @@ async def handle_facebook_message(user_id, page_id, message):
                 send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook)
             return send_message(user_id , page_id, response, access_token)
         case "default":
-            response = handle_default(message)
+            response = handle_default(message, field=field)
             return send_message(user_id , page_id, response, access_token)
     
     response = "Error: An unexpected error has occurred."

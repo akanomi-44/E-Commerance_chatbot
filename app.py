@@ -62,14 +62,14 @@ def token_webhook_required(f):
 
 @app.route('/send_message', methods=['POST'])
 @token_webhook_required
-def webhook_send_message():
+async def webhook_send_message():
     page_id = g.page_id
 
     text= request.json['text']
     user_id =request.json['user_id']
     print(text, user_id)
     try:
-        page = db.find_one_document("pages", {'page_id': page_id})
+        page = await db.find_one_document("pages", {'page_id': page_id})
         if not page:
           return
         
@@ -83,7 +83,7 @@ def webhook_send_message():
 
 @app.route("/add_page_info", methods=['POST'])
 @token_user_required
-def set_page_info():
+async def set_page_info():
 
     body = json.loads(request.json.get("body"))
     PAGE_ACCESS_TOKEN = body['page_access_token']
@@ -103,7 +103,7 @@ def set_page_info():
         response = requests.post(url, headers=headers, data=data)
 
         if response.status_code == 200:
-            result = db.find_one_and_update("pages", {'page_id': PAGE_ID} ,{'$set':{
+            result = await db.find_one_and_update("pages", {'page_id': PAGE_ID} ,{'$set':{
                     'page_id': PAGE_ID,
                     'user_id': user_id,
                     'access_token': PAGE_ACCESS_TOKEN,
@@ -146,7 +146,7 @@ async def listen():
 
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
-def set_webhook_url():
+async def set_webhook_url():
     body = json.loads( request.json.get("body"))
     page_webhook_url = body["page_webhook_url"].strip()
     page_id = body["page_id"].strip()
@@ -155,7 +155,7 @@ def set_webhook_url():
     if not res:
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
-    document = db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
+    document = await db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
     if not document: 
         return jsonify({"error": "Page Id not exist in database."}), 400
     
@@ -168,21 +168,21 @@ def set_webhook_url():
     
 @app.route('/getWebhooks', methods=['GET'])
 @token_user_required
-def getWebhooks():
+async def getWebhooks():
     user_id = g.user_id
     query = {'user_id': user_id}
-    client=  clientsCollection.find_one({'client_id': user_id})
+    client= await  db.find_one_document('clients',{'client_id': user_id})
 
     if not client:
         return jsonify({"error": "user_id not exist in database."}), 400
     
-    document = list(pagesCollection.find(query))
+    document = await db.find_documents('pages',query)
     if not document:
         return jsonify({"ok": "true", "pages": []}), 200
     return jsonify({'pages':json.loads(json_util.dumps(document))}), 200
         
 @app.route('/auth/facebook', methods =['POST'])
-def loginUser():
+async def loginUser():
     access_token = request.json.get("access_token")
     url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
     headers = {
@@ -192,7 +192,7 @@ def loginUser():
         response = requests.get(url, headers=headers).json()
         user_id = response['id']
         name = response['name']
-        data = db.find_one_and_update("pages",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
+        data =  await db.find_one_and_update("pages",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
         if data: 
             token = jwt.encode(
                     {'user_id': user_id, 'name': name},
