@@ -22,10 +22,8 @@ def request_classifyer(message):
         case_no = result[0][0]
         if case_no in case_mapping:
             return case_mapping[case_no]
-        else:
-            return "default"
-    else:
-        return "default"
+        
+    return "default"
     
 
 

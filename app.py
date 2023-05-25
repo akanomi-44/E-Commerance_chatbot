@@ -1,5 +1,5 @@
 
-from bson import json_util, ObjectId
+from bson import json_util
 import json
 
 from functools import wraps
@@ -13,6 +13,7 @@ from flask_cors import CORS
 
 from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
+
 app = Flask(__name__)
 cors = CORS(app)
 
