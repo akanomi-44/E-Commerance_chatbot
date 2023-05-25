@@ -140,9 +140,10 @@ async def listen():
                         sender_id = event['sender']['id']
                         await handle_facebook_message(sender_id,page_id, text )
 
-            return "ok"
+        return jsonify({'ok':True}),200
     except Exception as e:
         print(e)
+        return jsonify({'ok':False}),500
 
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
