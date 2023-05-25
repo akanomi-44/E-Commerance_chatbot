@@ -9,9 +9,9 @@ from config import Config
 
 from db.mongo import pagesCollection
 
-def request_classifyer(message):
+async def request_classifyer(message):
     col = semanticCollection("templateReq","req") 
-    result = col.semanticSearch(message,["case_no","similarities"])
+    result = await col.semanticSearch(message,["case_no","similarities"])
     # print(result)
     if result[0][1] >= 0.82:
         case_mapping = {
@@ -72,7 +72,7 @@ def send_message(recipient_id, page_id , text ,access_token):
     return response.json()
 
 
-def handle_facebook_message(user_id, page_id, message):
+async def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
@@ -81,7 +81,7 @@ def handle_facebook_message(user_id, page_id, message):
        return
     webhook = page['webhook']
     access_token = page['access_token']
-    requtest_type = request_classifyer(message)
+    requtest_type = await request_classifyer(message)
     print(f"type {requtest_type}")
     match requtest_type:
         case "case_1":
