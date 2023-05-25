@@ -103,27 +103,22 @@ def set_page_info():
         response = requests.post(url, headers=headers, data=data)
 
         if response.status_code == 200:
-            result = pagesCollection.find_one({'page_id': PAGE_ID})
-
-            if result is None:
-                pagesCollection.insert_one({
+            result = pagesCollection.find_one_and_update({'page_id': PAGE_ID} ,{'$set':{
                     'page_id': PAGE_ID,
                     'user_id': user_id,
                     'access_token': PAGE_ACCESS_TOKEN,
                     'webhook': ''
-                })
-            else:
-                pagesCollection.update_one({'page_id': PAGE_ID}, {'$set': {'access_token': PAGE_ACCESS_TOKEN}})
-            return jsonify({"message": "Page info added successfully."}), 200
-        else:
-            print(response.json())
-            return jsonify({"error": "Failed to install app"}), 400
+                }}, upsert=True)
+            if result:
+                return jsonify({"message": "Page info added successfully."}), 200
+        print(response.json())
+        return jsonify({"error": "Failed to install app"}), 400
     except Exception as e: 
         print(e)
         return jsonify({"error":"fail"}), 400
 
 @app.route("/webhook", methods=['GET', 'POST'])
-def listen():
+async def listen():
     """This is the main function flask uses to 
     listen at the `/webhook` endpoint"""
     if request.method == 'GET':
@@ -142,7 +137,7 @@ def listen():
                 if is_user_message(event):
                     text = event['message']['text']
                     sender_id = event['sender']['id']
-                    handle_facebook_message(sender_id,page_id, text )
+                    await handle_facebook_message(sender_id,page_id, text )
 
         return "ok"
 
@@ -157,14 +152,10 @@ def set_webhook_url():
     if not res:
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
-    query = {'page_id': page_id}
-    document = pagesCollection.find_one(query)
-    if document:
-        pagesCollection.update_one(query, {'$set': {"webhook": page_webhook_url}})
-    else: 
+    document = pagesCollection.find_one_and_update({'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
+    if not document: 
         return jsonify({"error": "Page Id not exist in database."}), 400
     
-
     token = jwt.encode(
                 {'page_id': page_id, 'page_webhook_url': page_webhook_url},
                 Config.JWT_SECRET_KEY,
@@ -190,7 +181,6 @@ def getWebhooks():
 @app.route('/auth/facebook', methods =['POST'])
 def loginUser():
     access_token = request.json.get("access_token")
-    print(access_token)
     url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
     headers = {
         'Content-Type': 'application/json'
@@ -199,16 +189,15 @@ def loginUser():
         response = requests.get(url, headers=headers).json()
         user_id = response['id']
         name = response['name']
-        data = clientsCollection.find_one({"client_id": user_id})
-        if not data:
-            data = clientsCollection.insert_one({"client_id": user_id, "name": name})
-
-        token = jwt.encode(
-                {'user_id': user_id, 'name': name},
-                Config.JWT_SECRET_KEY,
-                algorithm='HS256'
-            )
-        return jsonify({'token': token}), 200
+        data = clientsCollection.find_one_and_update({"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
+        if data: 
+            token = jwt.encode(
+                    {'user_id': user_id, 'name': name},
+                    Config.JWT_SECRET_KEY,
+                    algorithm='HS256'
+                )
+            return jsonify({'token': token}), 200
+        return jsonify({'message': 'Authentication failed'}), 401
     except Exception as e:
         print(e)
         return jsonify({'message': 'Authentication failed'}), 401
