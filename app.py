@@ -7,7 +7,7 @@ from flask import Flask, g, request, jsonify
 import jwt
 import requests
 from config import Config
-from db.mongo import pagesCollection, clientsCollection
+from db.mongo import db
 from dotenv import load_dotenv
 from flask_cors import CORS
 
@@ -69,7 +69,7 @@ def webhook_send_message():
     user_id =request.json['user_id']
     print(text, user_id)
     try:
-        page = pagesCollection.find_one({'page_id': page_id})
+        page = db.find_one_document("pages", {'page_id': page_id})
         if not page:
           return
         
@@ -103,7 +103,7 @@ def set_page_info():
         response = requests.post(url, headers=headers, data=data)
 
         if response.status_code == 200:
-            result = pagesCollection.find_one_and_update({'page_id': PAGE_ID} ,{'$set':{
+            result = db.find_one_and_update("pages", {'page_id': PAGE_ID} ,{'$set':{
                     'page_id': PAGE_ID,
                     'user_id': user_id,
                     'access_token': PAGE_ACCESS_TOKEN,
@@ -121,25 +121,28 @@ def set_page_info():
 async def listen():
     """This is the main function flask uses to 
     listen at the `/webhook` endpoint"""
-    if request.method == 'GET':
-        return verify_webhook(request)
+    try: 
+        if request.method == 'GET':
+            return verify_webhook(request)
 
-    if request.method == 'POST':
-        signature = request.headers.get('X-Hub-Signature')
-        payload = request.get_data()
-        if not verify_signature(signature, payload):
-            return jsonify({"error": "Unsupported request method."}), 400
-        payload = request.json
-        
-        for entry in payload['entry']:
-            page_id = entry['id']
-            for event in entry['messaging']:
-                if is_user_message(event):
-                    text = event['message']['text']
-                    sender_id = event['sender']['id']
-                    await handle_facebook_message(sender_id,page_id, text )
+        if request.method == 'POST':
+            signature = request.headers.get('X-Hub-Signature')
+            payload = request.get_data()
+            if not verify_signature(signature, payload):
+                return jsonify({"error": "Unsupported request method."}), 400
+            payload = request.json
+            
+            for entry in payload['entry']:
+                page_id = entry['id']
+                for event in entry['messaging']:
+                    if is_user_message(event):
+                        text = event['message']['text']
+                        sender_id = event['sender']['id']
+                        await handle_facebook_message(sender_id,page_id, text )
 
-        return "ok"
+            return "ok"
+    except Exception as e:
+        print(e)
 
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
@@ -152,7 +155,7 @@ def set_webhook_url():
     if not res:
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
-    document = pagesCollection.find_one_and_update({'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
+    document = db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
     if not document: 
         return jsonify({"error": "Page Id not exist in database."}), 400
     
@@ -189,7 +192,7 @@ def loginUser():
         response = requests.get(url, headers=headers).json()
         user_id = response['id']
         name = response['name']
-        data = clientsCollection.find_one_and_update({"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
+        data = db.find_one_and_update("pages",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
         if data: 
             token = jwt.encode(
                     {'user_id': user_id, 'name': name},

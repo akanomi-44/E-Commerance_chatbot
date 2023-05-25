@@ -100,3 +100,5 @@ scikit-learn
 flask_mongoengine
 flask-cors
 asyncio
+flask[async]
+motor

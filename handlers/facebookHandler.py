@@ -7,10 +7,10 @@ from .semanticHandler import semanticCollection
 
 from config import Config
 
-from db.mongo import pagesCollection
+from db.mongo import db
 
 async def request_classifyer(message):
-    col = semanticCollection("templateReq","req") 
+    col = semanticCollection("req") 
     result = await col.semanticSearch(message,["case_no","similarities"])
     # print(result)
     if result[0][1] >= 0.82:
@@ -76,7 +76,7 @@ async def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
     # DONE: Add a classify function
-    page = pagesCollection.find_one({'page_id': page_id})
+    page = db.find_one_document("pages" ,{'page_id': page_id})
     if not page:
        return
     webhook = page['webhook']
