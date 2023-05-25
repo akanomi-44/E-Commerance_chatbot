@@ -68,7 +68,13 @@ def webhook_send_message():
     user_id =request.json['user_id']
     print(text, user_id)
     try:
-        send_message(recipient_id=user_id, page_id=page_id, text=text)
+        page = pagesCollection.find_one({'page_id': page_id})
+        if not page:
+          return
+        
+        access_token = page['access_token']        
+
+        send_message(recipient_id=user_id, page_id=page_id, text=text,access_token=access_token)
         return jsonify({"ok: true"}), 200
     except Exception as e:
         print(e) 
@@ -135,9 +141,7 @@ def listen():
                 if is_user_message(event):
                     text = event['message']['text']
                     sender_id = event['sender']['id']
-                    page = pagesCollection.find_one({'page_id': page_id})
-                    if page:
-                        handle_facebook_message(sender_id,page_id, text )
+                    handle_facebook_message(sender_id,page_id, text )
 
         return "ok"
 
