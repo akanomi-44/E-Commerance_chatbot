@@ -16,7 +16,7 @@ def handle_default(message):
     if is_related == "Y":
         return get_gpt3_response(message)
     else:
-        return f"I can only process request that is in following cases:\n 1. Recommendation: Can you recommend some clothes for [event] ?,...  \n 2. Make an order: Where can i order this [item],... \n 3. Contact human assistant: Contact the manager,... \n 4. Answer related questions: What is the fashion trend of the 90s ?,... ?"
+        return f"I can only process request that is in following cases:\n\n 1. Recommendation: Can you recommend some clothes for [event] ?,...  \n\n 2. Make an order: Where can i order this [item],... \n\n 3. Contact human assistant: Contact the manager,... \n\n 4. Answer related questions: What is the fashion trend of the 90s ?,... ?"
 
 def send_webhook_message(type, message, user_id, url):
     payload = {
