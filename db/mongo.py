@@ -54,4 +54,3 @@ class MongoDB:
         return result
 
 db = MongoDB()
-db.connect()
