@@ -1,6 +1,7 @@
 import requests
 import hmac
 import hashlib
+import asyncio
 
 from .requestHandler import handle_case1, handle_case3, handle_case2, handle_default, send_webhook_message
 from .semanticHandler import semanticCollection 
@@ -47,7 +48,7 @@ def is_user_message(message):
 
 
 
-def send_message(recipient_id, page_id , text ,access_token):
+async def send_message(recipient_id, page_id , text ,access_token):
     """Send a response to Facebook"""
     payload = {
         "messaging_type": "RESPONSE",
@@ -69,7 +70,9 @@ def send_message(recipient_id, page_id , text ,access_token):
         json=payload
     )
 
-    return response.json()
+    result = await response.json()
+    return result
+    # return response.json()
 
 
 async def handle_facebook_message(user_id, page_id, message):
@@ -87,23 +90,26 @@ async def handle_facebook_message(user_id, page_id, message):
     match requtest_type:
         case "case_1":
             response = handle_case1(message)
-            return send_message(user_id , page_id, response, access_token)
+            return await send_message(user_id , page_id, response, access_token)
         case "case_2":
             response = handle_case2(message)
             if webhook:
-                send_webhook_message(type="order", message=message, user_id=user_id,url=webhook)
-            return send_message(user_id , page_id, response, access_token)
+                await asyncio.gather(send_webhook_message(type="order", message=message, user_id=user_id,url=webhook), send_message(user_id , page_id, response, access_token))
+            else:
+                return await send_message(user_id , page_id, response, access_token)
         case "case_3":
             response = handle_case3(message)
             if webhook:
                 send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook)
-            return send_message(user_id , page_id, response, access_token)
+                await asyncio.gather(send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook), send_message(user_id , page_id, response, access_token))
+            else:
+                return await send_message(user_id , page_id, response, access_token)
         case "default":
             response = handle_default(message, field=field)
-            return send_message(user_id , page_id, response, access_token)
+            return await send_message(user_id , page_id, response, access_token)
     
     response = "Error: An unexpected error has occurred."
-    return send_message(user_id , page_id, response, access_token)
+    return await send_message(user_id , page_id, response, access_token)
     # response = get_bot_response(message)
     # if(response):    
     #     return send_message(sender_id,recipient_id, response)
