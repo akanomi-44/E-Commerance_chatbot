@@ -1,4 +1,4 @@
-import requests
+import httpx
 import hmac
 import hashlib
 import asyncio
@@ -63,16 +63,42 @@ async def send_message(recipient_id, page_id , text ,access_token):
     auth = {
         'access_token': access_token,
     }
+    
+    async with httpx.AsyncClient() as client:
+        response= await client.post(f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload)
+        return response.json()
+        # async with session.post( f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload) as response:
+        #     result = await response.json()
+        #     return result
+   
+async def subscribe_app( PAGE_ID , PAGE_ACCESS_TOKEN):
+    url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'app_id': Config.APP_ID,
+        'subscribed_fields': 'messages',
+        'access_token': PAGE_ACCESS_TOKEN 
+    }
+   
+    async with httpx.AsyncClient() as client:
+        response= await client.post(url, headers=headers, data=data)
+        return response.json()
 
-    response = requests.post(
-        f"https://graph.facebook.com/v16.0/{page_id}/messages",
-        params=auth,
-        json=payload
-    )
-
-    result = await response.json()
-    return result
-    # return response.json()
+async def get_facebok_user( access_token):
+    url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    async with httpx.AsyncClient() as client:
+        response= await client.get(url, headers=headers)
+        return response.json()
+    # async with httpx.AsyncClient() as client:
+    #     async with session.get( url, headers=headers) as response:
+    #         result = await response.json()
+    #         return result
+   
 
 
 async def handle_facebook_message(user_id, page_id, message):
@@ -94,25 +120,18 @@ async def handle_facebook_message(user_id, page_id, message):
         case "case_2":
             response = handle_case2(message)
             if webhook:
-                await asyncio.gather(send_webhook_message(type="order", message=message, user_id=user_id,url=webhook), send_message(user_id , page_id, response, access_token))
+                return await asyncio.gather(send_webhook_message(type="order", message=message, user_id=user_id,url=webhook), send_message(user_id , page_id, response, access_token))
             else:
                 return await send_message(user_id , page_id, response, access_token)
         case "case_3":
             response = handle_case3(message)
             if webhook:
                 send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook)
-                await asyncio.gather(send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook), send_message(user_id , page_id, response, access_token))
+                return await asyncio.gather(send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook), send_message(user_id , page_id, response, access_token))
             else:
                 return await send_message(user_id , page_id, response, access_token)
         case "default":
             response = handle_default(message, field=field)
             return await send_message(user_id , page_id, response, access_token)
     
-    response = "Error: An unexpected error has occurred."
-    return await send_message(user_id , page_id, response, access_token)
-    # response = get_bot_response(message)
-    # if(response):    
-    #     return send_message(sender_id,recipient_id, response)
-    # return handle_chatgpt_message(sender_id, message)
-
 

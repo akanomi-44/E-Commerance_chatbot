@@ -1,5 +1,5 @@
 import json
-import aiohttp
+import httpx
 import pandas as pd
 import asyncio
 import openai
@@ -62,7 +62,7 @@ class semanticCollection:
         'Authorization': 'Bearer ' + Config.OPENAI_API_KEY,
         'Content-Type': 'application/json'
         }
-        async with aiohttp.ClientSession() as session:
+        async with httpx.AsyncClient() as client:
             async with session.post(url, data=payload, headers=headers) as response:
                 result = await response.json()
                 return result
