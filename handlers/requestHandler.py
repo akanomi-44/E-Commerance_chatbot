@@ -1,6 +1,5 @@
-import aiohttp
+import httpx
 from .chatgptHandler import get_gpt3_response
-import requests
 
 def handle_case1(message):
     prompt = f"{message}. Return result as a list"
@@ -29,7 +28,7 @@ async def send_webhook_message( type, message, user_id, url):
     headers = {
             'Content-Type': 'application/json'
         }
-    async with aiohttp.ClientSession() as session:
+    async with httpx.AsyncClient() as client:
         async with session.post(url, json=payload, headers=headers) as response:
             result = await response.json()
             return result

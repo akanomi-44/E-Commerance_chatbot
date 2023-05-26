@@ -22,8 +22,6 @@ python-dotenv
 entrypoints==0.4
 executing==0.9.1
 fastjsonschema==2.16.1
-Flask==2.2.1
-flask-unsign==1.2.0
 gitdb==4.0.9
 GitHacker==1.1.1
 GitPython==3.1.27
@@ -91,14 +89,13 @@ webencodings==0.5.1
 Werkzeug==2.2.1
 widgetsnbextension==3.6.1
 openai
-flask_jwt_extended
 pandas
 matplotlib
 plotly
 scipy
 scikit-learn
-flask_mongoengine
-flask-cors
 asyncio
-flask[async]
 motor
+quart
+quart-cors
+httpx
