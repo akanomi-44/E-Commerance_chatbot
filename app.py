@@ -12,7 +12,7 @@ from db.mongo import db
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, verify_signature, verify_webhook
+from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, subscribe_app, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
 
 app = Flask(__name__)
@@ -79,43 +79,33 @@ async def webhook_send_message():
         return jsonify({"ok: true"}), 200
     except Exception as e:
         print(f"error: {e}") 
-        return jsonify({'message': 'Internal server error'}), 503
+        return jsonify({'error': str(e)}), 500
 
 @app.route("/add_page_info", methods=['POST'])
 @token_user_required
 async def set_page_info():
-
+    user_id = g.user_id 
     body = json.loads(request.json.get("body"))
     PAGE_ACCESS_TOKEN = body['page_access_token']
     PAGE_ID = body['page_id']
-    user_id = g.user_id 
-    
-    url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    data = {
-        'app_id': Config.APP_ID,
-        'subscribed_fields': 'messages',
-        'access_token': PAGE_ACCESS_TOKEN 
-    }
     try:
-        response = requests.post(url, headers=headers, data=data)
-
-        if response.status_code == 200:
-            result = await db.find_one_and_update("pages", {'page_id': PAGE_ID} ,{'$set':{
-                    'page_id': PAGE_ID,
-                    'user_id': user_id,
-                    'access_token': PAGE_ACCESS_TOKEN,
-                    'webhook': ''
-                }}, upsert=True)
-            if result:
-                return jsonify({"message": "Page info added successfully."}), 200
-        print(response.json())
-        return jsonify({"error": "Failed to install app"}), 400
+        response = await subscribe_app(PAGE_ID=PAGE_ID, PAGE_ACCESS_TOKEN=PAGE_ACCESS_TOKEN)
+        if not  response:
+            return jsonify({"error": "Failed to install app"}), 400
+        
+        result = await db.find_one_and_update("pages", {'page_id': PAGE_ID} ,{'$set':{
+                'page_id': PAGE_ID,
+                'user_id': user_id,
+                'access_token': PAGE_ACCESS_TOKEN,
+                'webhook': ''
+            }}, upsert=True)
+        if not result:
+            return jsonify({"message": "Page_id not found"}), 404
+        
+        return jsonify({"message": "Page info added successfully."}), 200
     except Exception as e: 
         print(f"error: {e}")
-        return jsonify({"error":"fail"}), 400
+        return jsonify({"error":str(e)}), 500
 
 @app.route("/webhook", methods=['GET', 'POST'])
 async def listen():
@@ -151,9 +141,8 @@ async def set_webhook_url():
     body = json.loads( request.json.get("body"))
     page_webhook_url = body["page_webhook_url"].strip()
     page_id = body["page_id"].strip()
-    res  =has_valid_ssl(page_webhook_url)
 
-    if not res:
+    if not has_valid_ssl(page_webhook_url):
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
     document = await db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url}}, upsert=False)
