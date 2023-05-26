@@ -193,7 +193,7 @@ async def loginUser():
         response = requests.get(url, headers=headers).json()
         user_id = response['id']
         name = response['name']
-        data =  await db.find_one_and_update("pages",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
+        data =  await db.find_one_and_update("clients",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
         if data: 
             token = jwt.encode(
                     {'user_id': user_id, 'name': name},
