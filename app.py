@@ -33,7 +33,7 @@ def token_user_required(f):
             data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
             g.user_id = data['user_id']
         except Exception as e:
-            print(e)
+            print(f"error: {e}")
             return jsonify({'message': 'Token is invalid!'}), 401
 
         return await f(*args, **kwargs)
@@ -78,7 +78,7 @@ async def webhook_send_message():
         send_message(recipient_id=user_id, page_id=page_id, text=text,access_token=access_token)
         return jsonify({"ok: true"}), 200
     except Exception as e:
-        print(e) 
+        print(f"error: {e}") 
         return jsonify({'message': 'Internal server error'}), 503
 
 @app.route("/add_page_info", methods=['POST'])
@@ -114,7 +114,7 @@ async def set_page_info():
         print(response.json())
         return jsonify({"error": "Failed to install app"}), 400
     except Exception as e: 
-        print(e)
+        print(f"error: {e}")
         return jsonify({"error":"fail"}), 400
 
 @app.route("/webhook", methods=['GET', 'POST'])
@@ -142,7 +142,7 @@ async def listen():
 
         return jsonify({'ok':True}),200
     except Exception as e:
-        print(e)
+        print(f"error: {e}")
         return jsonify({'ok':False}),500
 
 @app.route('/set_webhook_url', methods=['POST'])
@@ -203,7 +203,7 @@ async def loginUser():
             return jsonify({'token': token}), 200
         return jsonify({'message': 'Authentication failed'}), 401
     except Exception as e:
-        print(e)
+        print(f"error: {e}")
         return jsonify({'message': 'Authentication failed'}), 401
 
 
