@@ -4,19 +4,18 @@ from bson import json_util
 import json
 
 from functools import wraps
-from flask import Flask, g, request, jsonify
+from flask_cors import CORS
 import jwt
 import requests
 from config import Config
 from db.mongo import db
 from dotenv import load_dotenv
-from flask_cors import CORS
 
-from handlers.facebookHandler import handle_facebook_message, is_user_message, send_message, subscribe_app, verify_signature, verify_webhook
+from handlers.facebookHandler import get_facebok_user, handle_facebook_message, is_user_message, send_message, subscribe_app, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
-
-app = Flask(__name__)
-cors = CORS(app)
+from quart import Quart, g, jsonify, request
+app = Quart(__name__)
+# cors = CORS(app)
 
 load_dotenv()
 
@@ -24,14 +23,25 @@ load_dotenv()
 def token_user_required(f):
     @wraps(f)
     async def decorated(*args, **kwargs):
-        tokenBearer = request.headers.get('Authorization')
-        if not tokenBearer:
-            return jsonify({'message': 'Token is missing!'}), 401
+        token = None
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            token = auth_header.split()[1]  # Extract the JWT token from the header
+
+        if not token:
+            return 'Missing token', 401
 
         try:
-            token =tokenBearer.split(' ')[1]
-            data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
-            g.user_id = data['user_id']
+
+            decoded = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
+            g.user_id = decoded['user_id']
+
+        except jwt.ExpiredSignatureError:
+            return 'Token expired', 401
+
+        except jwt.InvalidTokenError:
+            return 'Invalid token', 401
+
         except Exception as e:
             print(f"error: {e}")
             return jsonify({'message': 'Token is invalid!'}), 401
@@ -45,14 +55,23 @@ def token_user_required(f):
 def token_webhook_required(f):
     @wraps(f)
     async def decorated(*args, **kwargs):
-        tokenBearer = request.headers.get('Authorization')
-        if not tokenBearer:
-            return jsonify({'message': 'Token is missing!'}), 401
+        token = None
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            token = auth_header.split()[1]  # Extract the JWT token from the header
+
+        if not token:
+            return 'Missing token', 401
 
         try:
-            token =tokenBearer.split(' ')[1]
-            data = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
-            g.page_id = data['page_id'] 
+            decoded = jwt.decode(token, algorithms="HS256",key= Config.JWT_SECRET_KEY)
+            g.page_id = decoded['page_id'] 
+        except jwt.ExpiredSignatureError:
+            return 'Token expired', 401
+
+        except jwt.InvalidTokenError:
+            return 'Invalid token', 401
+
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 
@@ -64,9 +83,10 @@ def token_webhook_required(f):
 @token_webhook_required
 async def webhook_send_message():
     page_id = g.page_id
-
-    text= request.json['text']
-    user_id =request.json['user_id']
+    request_body = await request.get_json()
+    
+    text= request_body['text']
+    user_id =request_body['user_id']
     print(text, user_id)
     try:
         page = await db.find_one_document("pages", {'page_id': page_id})
@@ -85,7 +105,8 @@ async def webhook_send_message():
 @token_user_required
 async def set_page_info():
     user_id = g.user_id 
-    body = json.loads(request.json.get("body"))
+    request_body = await request.get_json()
+    body = json.loads( request_body["body"])
     PAGE_ACCESS_TOKEN = body['page_access_token']
     PAGE_ID = body['page_id']
     try:
@@ -117,10 +138,9 @@ async def listen():
 
         if request.method == 'POST':
             signature = request.headers.get('X-Hub-Signature')
-            payload = request.get_data()
+            payload = await  request.get_json()
             if not verify_signature(signature, payload):
                 return jsonify({"error": "Unsupported request method."}), 400
-            payload = request.json
             
             for entry in payload['entry']:
                 page_id = entry['id']
@@ -138,7 +158,8 @@ async def listen():
 @app.route('/set_webhook_url', methods=['POST'])
 @token_user_required
 async def set_webhook_url():
-    body = json.loads( request.json.get("body"))
+    request_body = await request.get_json()
+    body = json.loads( request_body["body"])
     page_webhook_url = body["page_webhook_url"].strip()
     page_id = body["page_id"].strip()
 
@@ -173,13 +194,12 @@ async def getWebhooks():
         
 @app.route('/auth/facebook', methods =['POST'])
 async def loginUser():
-    access_token = request.json.get("access_token")
-    url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
-    headers = {
-        'Content-Type': 'application/json'
-    }
+    request_body = await request.get_json()
+
+    access_token = request_body['access_token']
+   
     try:
-        response = requests.get(url, headers=headers).json()
+        response= await get_facebok_user(access_token=access_token)
         user_id = response['id']
         name = response['name']
         data =  await db.find_one_and_update("clients",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True)
@@ -195,6 +215,5 @@ async def loginUser():
         print(f"error: {e}")
         return jsonify({'message': 'Authentication failed'}), 401
 
-
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run()

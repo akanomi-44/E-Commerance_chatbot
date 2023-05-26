@@ -1,5 +1,4 @@
-import aiohttp
-import requests
+import httpx
 import hmac
 import hashlib
 import asyncio
@@ -65,10 +64,12 @@ async def send_message(recipient_id, page_id , text ,access_token):
         'access_token': access_token,
     }
     
-    async with aiohttp.ClientSession() as session:
-        async with session.post( f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload) as response:
-            result = await response.json()
-            return result
+    async with httpx.AsyncClient() as client:
+        response= await client.post(f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload)
+        return response.json()
+        # async with session.post( f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload) as response:
+        #     result = await response.json()
+        #     return result
    
 async def subscribe_app( PAGE_ID , PAGE_ACCESS_TOKEN):
     url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
@@ -81,11 +82,24 @@ async def subscribe_app( PAGE_ID , PAGE_ACCESS_TOKEN):
         'access_token': PAGE_ACCESS_TOKEN 
     }
    
-    async with aiohttp.ClientSession() as session:
-        async with session.post( url, headers=headers, data=data) as response:
-            result = await response.json()
-            return result
+    async with httpx.AsyncClient() as client:
+        response= await client.post(url, headers=headers, data=data)
+        return response.json()
+
+async def get_facebok_user( access_token):
+    url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    async with httpx.AsyncClient() as client:
+        response= await client.get(url, headers=headers)
+        return response.json()
+    # async with httpx.AsyncClient() as client:
+    #     async with session.get( url, headers=headers) as response:
+    #         result = await response.json()
+    #         return result
    
+
 
 async def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
