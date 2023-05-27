@@ -12,12 +12,12 @@ def handle_case3(message):
     return "I have notified Store Owner. In the meantime if you have any questions please let me know"
     
 def handle_default(message, field):
-    prompt = f"User: {message}. Give me a response with {field} suggestions or details if related else answer only 'No'"
+    prompt = f"User: {message}. Give me a response if related to {field} else answer only 'No'"
     message = get_gpt3_response(prompt)
-    if message != "No.":
+    if message != "No":
         return message
     else:
-        return f"I can only process request that is in following cases:\n\n 1. Recommendation: Can you recommend some clothes for [event] ?,...  \n\n 2. Make an order: Where can i order this [item],... \n\n 3. Contact human assistant: Contact the manager,... \n\n 4. Answer related questions: What is the fashion trend of the 90s ?,... ?"
+        return f"I can only process request that is in following cases:\n\n 1. Recommendation: Can you recommend some [product] for [event] ?,...  \n\n 2. Make an order: Where can i order this [item],... \n\n 3. Contact human assistant: Contact the manager,... \n\n 4. Answer related questions: What is the fashion trend of the 90s ?,... ?"
 
 async def send_webhook_message( type, message, user_id, url):
     payload = {
