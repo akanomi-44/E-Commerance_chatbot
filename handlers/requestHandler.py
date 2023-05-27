@@ -5,8 +5,8 @@ def handle_case1(message):
     prompt = f"{message}. Return result as a list"
     return get_gpt3_response(prompt)
 
-def handle_case2(message):
-    return f"You can make an order here: <e-com platform links>"
+def handle_case2(shop_link):
+    return f"You can make an order here: {shop_link}"
 
 def handle_case3(message):
     return "I have notified Store Owner. In the meantime if you have any questions please let me know"

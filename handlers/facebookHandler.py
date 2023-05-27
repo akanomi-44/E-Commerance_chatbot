@@ -105,6 +105,7 @@ async def handle_facebook_message(user_id, page_id, message):
     access_token = page['access_token']
     field = page['field'] if 'field' in page else 'clothings'
     location = page['location'] if 'location' in page else ''
+    shop_link = page['shop_link'] if 'shop_link' in page else ''
     request_type = await request_classifier(message)
 
     print(f"type {request_type}")
@@ -113,7 +114,7 @@ async def handle_facebook_message(user_id, page_id, message):
             response = handle_case1(message)
             return await send_message(user_id , page_id, response, access_token)
         case "case_2":
-            response = handle_case2(message)
+            response = handle_case2(shop_link)
             if webhook:
                 return await asyncio.gather(send_webhook_message(type="order", message=message, user_id=user_id,url=webhook), send_message(user_id , page_id, response, access_token))
             else:
