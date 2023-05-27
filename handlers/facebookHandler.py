@@ -112,7 +112,9 @@ async def handle_facebook_message(user_id, page_id, message):
     webhook = page['webhook']
     access_token = page['access_token']
     field = page['field'] if 'field' in page else 'clothings'
+    location = page['location'] if 'location' in page else ''
     requtest_type = await request_classifyer(message)
+
     print(f"type {requtest_type}")
     match requtest_type:
         case "case_1":
@@ -132,7 +134,6 @@ async def handle_facebook_message(user_id, page_id, message):
             else:
                 return await send_message(user_id , page_id, response, access_token)
         case "case_4":
-            location = await db.find_documents("pages", {'page_id': page_id})
             response = handle_case4(location)
             return await send_message(user_id , page_id, response, access_token)
         case "default":

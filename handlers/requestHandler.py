@@ -14,7 +14,8 @@ def handle_case3(message):
 def handle_case4(location):
     if location != "":
         return f"Our shop is located at {location}"
-    return f"We don't have an official location yet, but we're working on it. Stay tuned for updates on our website and social media. Thank you for your interest!"
+    else:
+        return f"We don't have an official location yet, but we're working on it. Stay tuned for updates on our website and social media. Thank you for your interest!"
 
 def handle_default(message, field):
     prompt = f"User: {message}. Give me a response if related to {field} else answer only 'No'"
