@@ -18,7 +18,7 @@ def handle_case4(location):
         return f"We don't have an official location yet, but we're working on it. Stay tuned for updates on our website and social media. Thank you for your interest!"
 
 def handle_default(message, field):
-    prompt = f"User message: {message}. Don't greet and answer this 'User message' naturally as a {field} store owner, if not related to {field} redirect to {field} if it is naturally else just response No"
+    prompt = f"User: {message}. Give me a response if related to {field} else answer only 'No'"
     message = get_gpt3_response(prompt)
     if message not in  ["No", "No."]:
         return message
