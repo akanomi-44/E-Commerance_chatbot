@@ -48,9 +48,9 @@ class MongoDB:
         result = await collection.delete_one(query)
         return result.deleted_count
     
-    async def find_one_and_update(self, collection_name, query, update, upsert):
+    async def find_one_and_update(self, collection_name, query, update, upsert ,new):
         collection = self.db[collection_name]
-        result = await collection.find_one_and_update(query, update, upsert=upsert)
+        result = await collection.find_one_and_update(query, update, upsert=upsert, new=new)
         return result
 
 db = MongoDB()
