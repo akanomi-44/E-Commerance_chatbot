@@ -100,4 +100,3 @@ motor
 quart
 quart-cors
 httpx
-flask-cors

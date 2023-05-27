@@ -6,8 +6,6 @@ from openai.embeddings_utils import cosine_similarity
 from config import Config
 
 openai.api_key = Config.OPENAI_API_KEY
-#default client (local host)
-# client = pymongo.MongoClient("mongodb://localhost:27017/")
 
 class Server:
     def __init__(self,dbName, collectionName, clientName= "mongodb://localhost:27017/", embField = "req" ):
@@ -40,12 +38,6 @@ class Server:
             
             self.collection.update_one({'_id': doc['_id']}, {'$set': {'embedding': embedding}})
 
-
-        # tmp
-        # df.to_csv("tmp_test.csv")
-        # for _,row in df.iterrows():
-        #     print(type(row.get('embedding')))
-    
     def dropCollection(self, dbName=None,collectionName=None):
         if dbName is None or collectionName is None:
             dbName = self.db.name
@@ -86,43 +78,6 @@ class Server:
             """return the value of embeded field"""
             result.append(df.sort_values("similarities", ascending=False, ignore_index =True).iloc[i][returnHeader].tolist())
         return result
-        
-    def getMostRelavant(self,text):
-        if text is None:
-            return 
-        else:
-            text_vec = get_embedding(text, engine="text-embedding-ada-002")
             
-            df = pd.DataFrame(list(self.collection.find()))
-            
-            # Transform data from string to numpy array in order to calculate 
-            # df['embedding'] = df['embedding'].apply(eval).apply(np.array)
-
-            df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, text_vec))
-
-            if 1: 
-                print("===================================================")
-                print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False))
-                print("===================================================")
-            if 1:
-                # print(df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField])
-                return df[[self.embField,"similarities"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0][self.embField]
-            
-
-# for testing 
-    def getMostRelavantVec(self,vec):
-        df = pd.DataFrame(list(self.collection.find()))
-        df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, vec))
-
-        if 1: 
-            print("=================================================================")
-            print(df[[self.embField,"similarities","case_no"]].sort_values("similarities", ascending=False))
-            print("=================================================================")
-        if 1:
-            return df[[self.embField,"similarities","case_no"]].sort_values("similarities", ascending=False, ignore_index=True).loc[0]["case_no"]
-
-    def test(self):
-        df = pd.DataFrame(list(self.collection.find()))
-        print(df.head())
 
 

@@ -3,9 +3,6 @@ import motor.motor_asyncio
 
 class MongoDB:
     def __init__(self):
-# pages
-# clients
-# templateReq
         self.host = Config.DB_CLUSTER
         self.userName = Config.DB_USER_NAME
         self.password = Config.DB_PASS

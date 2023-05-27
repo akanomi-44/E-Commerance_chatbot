@@ -38,7 +38,3 @@ async def send_webhook_message( type, message, user_id, url):
     async with httpx.AsyncClient() as client:
         response= await client.post(url, headers=headers,json=payload)
         return response.json()
-    # async with httpx.AsyncClient() as client:
-    #     async with session.post(url, json=payload, headers=headers) as response:
-    #         result = await response.json()
-    #         return result

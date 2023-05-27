@@ -28,29 +28,29 @@ I'd like to order a [product]. How can I do that?;case2_placeOrder
 I'm ready to make a purchase for a [product]. What's the next step?;case2_placeOrder
 Can you guide me on how to order a [product] from your website?;case2_placeOrder
 I have decided to buy a [product]. Can you assist me with the process?;case2_placeOrder
-Can I speak with a store manager?;case3_conntactHuman
-Transfer me to an employee, please.;case3_conntactHuman
-I need to speak with someone in charge.;case3_conntactHuman
-Get me a store representative on the line.;case3_conntactHuman
-Can I talk to a real person?;case3_conntactHuman
-I need to speak with someone who can assist me.;case3_conntactHuman
-Transfer me to a customer service representative.;case3_conntactHuman
-Can I have an employee call me back?;case3_conntactHuman
-I would like to speak to the manager on duty.;case3_conntactHuman
-Can I have someone from the store contact me?;case3_conntactHuman
-Please get me in touch with a customer support representative.;case3_conntactHuman
-Can you connect me with a live person?;case3_conntactHuman
-I want to speak with someone who can help me with my purchase.;case3_conntactHuman
-Can I have an employee come to the phone?;case3_conntactHuman
-I need to speak with someone in authority.;case3_conntactHuman
-Can I speak with a manager or supervisor?;case3_conntactHuman
-I want to speak with someone who can handle my complaint.;case3_conntactHuman
-Please connect me with a store employee.;case3_conntactHuman
-Can I have someone from the store contact me as soon as possible?;case3_conntactHuman
-I need to talk to someone in charge of customer service.;case3_conntactHuman
-Please put me in touch with a store manager or supervisor.;case3_conntactHuman
-I want to speak with a real person, not a chatbot.;case3_conntactHuman
-Can I have an employee assist me with my purchase?;case3_conntactHuman
+Can I speak with a store manager?;case3_contactHuman
+Transfer me to an employee, please.;case3_contactHuman
+I need to speak with someone in charge.;case3_contactHuman
+Get me a store representative on the line.;case3_contactHuman
+Can I talk to a real person?;case3_contactHuman
+I need to speak with someone who can assist me.;case3_contactHuman
+Transfer me to a customer service representative.;case3_contactHuman
+Can I have an employee call me back?;case3_contactHuman
+I would like to speak to the manager on duty.;case3_contactHuman
+Can I have someone from the store contact me?;case3_contactHuman
+Please get me in touch with a customer support representative.;case3_contactHuman
+Can you connect me with a live person?;case3_contactHuman
+I want to speak with someone who can help me with my purchase.;case3_contactHuman
+Can I have an employee come to the phone?;case3_contactHuman
+I need to speak with someone in authority.;case3_contactHuman
+Can I speak with a manager or supervisor?;case3_contactHuman
+I want to speak with someone who can handle my complaint.;case3_contactHuman
+Please connect me with a store employee.;case3_contactHuman
+Can I have someone from the store contact me as soon as possible?;case3_contactHuman
+I need to talk to someone in charge of customer service.;case3_contactHuman
+Please put me in touch with a store manager or supervisor.;case3_contactHuman
+I want to speak with a real person, not a chatbot.;case3_contactHuman
+Can I have an employee assist me with my purchase?;case3_contactHuman
 Where can I find your store?;case4_getLocation
 Could you please provide the location of the shop?;case4_getLocation
 What is the address of the store ?;case4_getLocation

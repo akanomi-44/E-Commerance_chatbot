@@ -10,7 +10,7 @@ from config import Config
 from db.mongo import db
 from dotenv import load_dotenv
 
-from handlers.facebookHandler import get_facebok_user, handle_facebook_message, is_user_message, send_message, subscribe_app, verify_signature, verify_webhook
+from handlers.facebookHandler import get_facebook_user, handle_facebook_message, is_user_message, send_message, subscribe_app, verify_signature, verify_webhook
 from handlers.sslHandler import has_valid_ssl
 from quart import Quart, g, jsonify, request
 app = Quart(__name__)
@@ -201,7 +201,7 @@ async def loginUser():
     access_token = request_body['access_token']
    
     try:
-        response= await get_facebok_user(access_token=access_token)
+        response= await get_facebook_user(access_token=access_token)
         user_id = response['id']
         name = response['name']
         data =  await db.find_one_and_update("clients",{"client_id": user_id}, {"$set": {"client_id": user_id, "name": name}}, upsert=True, new = True)

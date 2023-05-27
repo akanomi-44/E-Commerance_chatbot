@@ -10,15 +10,14 @@ from config import Config
 
 from db.mongo import db
 
-async def request_classifyer(message):
+async def request_classifier(message):
     col = semanticCollection("req") 
     result = await col.semanticSearch(message,["case_no","similarities"])
-    # print(result)
     if result[0][1] >= 0.82:
         case_mapping = {
             "case1_recommendation": "case_1",
             "case2_placeOrder": "case_2",
-            "case3_conntactHuman": "case_3",
+            "case3_contactHuman": "case_3",
             "case4_getLocation": "case_4"
         }
         case_no = result[0][0]
@@ -68,9 +67,7 @@ async def send_message(recipient_id, page_id , text ,access_token):
     async with httpx.AsyncClient() as client:
         response= await client.post(f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload)
         return response.json()
-        # async with session.post( f"https://graph.facebook.com/v16.0/{page_id}/messages", params=auth, json=payload) as response:
-        #     result = await response.json()
-        #     return result
+
    
 async def subscribe_app( PAGE_ID , PAGE_ACCESS_TOKEN):
     url = f'https://graph.facebook.com/v16.0/{PAGE_ID}/subscribed_apps'
@@ -87,7 +84,7 @@ async def subscribe_app( PAGE_ID , PAGE_ACCESS_TOKEN):
         response= await client.post(url, headers=headers, data=data)
         return response.json()
 
-async def get_facebok_user( access_token):
+async def get_facebook_user( access_token):
     url = f'https://graph.facebook.com/v16.0/me?access_token={access_token}&fields=id,name'
     headers = {
         'Content-Type': 'application/json'
@@ -95,17 +92,12 @@ async def get_facebok_user( access_token):
     async with httpx.AsyncClient() as client:
         response= await client.get(url, headers=headers)
         return response.json()
-    # async with httpx.AsyncClient() as client:
-    #     async with session.get( url, headers=headers) as response:
-    #         result = await response.json()
-    #         return result
-   
+
 
 
 async def handle_facebook_message(user_id, page_id, message):
     """Formulate a response to the user and
     pass it on to a function that sends it."""
-    # DONE: Add a classify function
     page = await db.find_one_document("pages" ,{'page_id': page_id})
     if not page:
        return
@@ -113,10 +105,10 @@ async def handle_facebook_message(user_id, page_id, message):
     access_token = page['access_token']
     field = page['field'] if 'field' in page else 'clothings'
     location = page['location'] if 'location' in page else ''
-    requtest_type = await request_classifyer(message)
+    request_type = await request_classifier(message)
 
-    print(f"type {requtest_type}")
-    match requtest_type:
+    print(f"type {request_type}")
+    match request_type:
         case "case_1":
             response = handle_case1(message)
             return await send_message(user_id , page_id, response, access_token)
