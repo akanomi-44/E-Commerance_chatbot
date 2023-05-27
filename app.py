@@ -137,10 +137,11 @@ async def listen():
 
         if request.method == 'POST':
             signature = request.headers.get('X-Hub-Signature')
-            payload = await  request.get_json()
-            if not verify_signature(signature, payload):
+            data = await request.get_data()
+            if not verify_signature(signature, data):
                 return jsonify({"error": "Unsupported request method."}), 400
             
+            payload = await  request.get_json()
             for entry in payload['entry']:
                 page_id = entry['id']
                 for event in entry['messaging']:
