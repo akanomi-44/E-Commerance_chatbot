@@ -1,83 +1,46 @@
-Can you recommend some casual tops for the summer season?;case1_recommendation
-What would be a good outfit for a beach party?;case1_recommendation
-I'm looking for a new dress for a wedding, any suggestions?;case1_recommendation
-Could you suggest some comfortable yet stylish work pants?;case1_recommendation
-What are the latest fashion trends for men's jackets?;case1_recommendation
-Can you recommend some cozy sweaters for fall?;case1_recommendation
-I need some workout clothes, can you suggest some good options?;case1_recommendation
-Could you suggest a dressy outfit for a fancy dinner party?;case1_recommendation
-What are some stylish accessories to pair with a little black dress?;case1_recommendation
-Can you recommend some durable hiking shoes?;case1_recommendation
-I'm going on a business trip, what would be some good travel clothes to wear?;case1_recommendation
-Can you suggest some modest clothing options?;case1_recommendation
-What are the latest fashion trends for women's blouses?;case1_recommendation
-I'm going to a music festival, can you suggest some festival clothing ideas?;case1_recommendation
-Can you recommend some stylish yet affordable jeans?;case1_recommendation
-What would be a good outfit for a date night?;case1_recommendation
-Can you suggest some comfortable yet chic flats for work?;case1_recommendation
-What are the latest fashion trends for men's suits?;case1_recommendation
-I'm looking for a swimsuit for my vacation, any suggestions?;case1_recommendation
-Can you recommend some eco-friendly clothing brands?;case1_recommendation
-I need some formal attire for a black-tie event, can you recommend some options?;case1_recommendation
-Can you suggest some trendy streetwear brands for men?;case1_recommendation
-What are some good options for winter coats that are warm but not bulky?;case1_recommendation
-I'm looking for a unique outfit for a themed party, any ideas?;case1_recommendation
-Can you recommend some sustainable and ethical fashion brands?;case1_recommendation
-I'm in search of a statement piece to wear to a fashion event, what do you suggest?;case1_recommendation
-Could you recommend some comfortable yet stylish shoes for daily wear?;case1_recommendation
-What are some versatile clothing pieces that can be dressed up or down?;case1_recommendation
-Can you suggest some fashion-forward accessories to enhance a basic outfit?;case1_recommendation
-I'm going on a safari trip, what clothing and accessories do you suggest I bring along?;case1_recommendation
-I'm interested in purchasing [item name/number].;case2_placeOrder
-Can you please send me more information about [item name/number] and the ordering process?;case2_placeOrder
-I would like to order [quantity] of [item name/number].;case2_placeOrder
-Can you provide me with the price and availability of [item name/number]?;case2_placeOrder
-Please send me a quote for [quantity] of [item name/number].;case2_placeOrder
-I'm interested in purchasing [item name/number] in bulk. What's your bulk pricing?;case2_placeOrder
-I'd like to place an order for [quantity] of [item name/number] with expedited shipping. Can you please let me know the total cost?;case2_placeOrder
-Do you offer any discounts for large orders of [item name/number]?;case2_placeOrder
-I'm looking to purchase [item name/number] as a gift. Can you offer any gift wrapping services?;case2_placeOrder
-Can you provide me with the dimensions and weight of [item name/number] for shipping purposes?;case2_placeOrder
-I would like to purchase [item name/number] in a different color/size. Is that possible?;case2_placeOrder
-What is the minimum order quantity for [item name/number]?;case2_placeOrder
-Can you please let me know the lead time for delivery of [item name/number]?;case2_placeOrder
-I'm interested in placing a wholesale order for [item name/number]. Can you provide me with pricing and lead time information?;case2_placeOrder
-I'd like to place an order for [quantity] of [item name/number] and have it shipped to [address]. Can you please provide me with a shipping quote?;case2_placeOrder
-Can you please let me know if you have [item name/number] in stock?;case2_placeOrder
-I would like to place an order for [quantity] of [item name/number] and have it shipped internationally. Can you provide me with a quote for shipping?;case2_placeOrder
-I'm interested in purchasing [item name/number] and was wondering if you offer any financing options.;case2_placeOrder
-Can you please let me know the return policy for [item name/number]?;case2_placeOrder
-I'm interested in purchasing [item name/number] and was wondering if you offer any warranties.;case2_placeOrder
-I'd like to place an order for [quantity] of [item name/number] and have it shipped to multiple addresses. Is that possible?;case2_placeOrder
-Can you provide me with the SKU number for [item name]?;case2_placeOrder
-I'm interested in purchasing [item name/number] and was wondering if you offer any installation services.;case2_placeOrder
-Can you provide me with the product specifications for [item name/number]?;case2_placeOrder
-I'd like to place an order for [quantity] of [item name/number] and have it shipped via a specific carrier. Can you accommodate that request?;case2_placeOrder
-What payment methods do you accept for orders of [item name/number]?;case2_placeOrder
-Can you provide me with the tracking number for my order of [item name/number]?;case2_placeOrder
-I'm interested in purchasing [item name/number] and was wondering if you offer any customization options.;case2_placeOrder
-Can you provide me with a list of accessories that are compatible with [item name/number]?;case2_placeOrder
-I'd like to place an order for [quantity] of [item name/number] and have it shipped via overnight delivery. Can you please provide me with a quote?;case2_placeOrder
+I'm looking for suggestions on [product]. Can you help me out?;case1_recommendation
+Could you recommend some options for [product]?;case1_recommendation
+Seeking your advice! Can you suggest some [product] choices?;case1_recommendation
+Looking to explore new [product] options. Can you suggest some for me?;case1_recommendation
+Could you provide me with some recommendations for [product]?;case1_recommendation
+Could you suggest some [product] options for [event]?;case1_recommendation
+Looking for suggestions on [product] for [event]. Any recommendations?;case1_recommendation
+Could you provide me with some [product] suggestions for [event]?;case1_recommendation
+Looking for [product] recommendations to match [event]. What would you suggest?;case1_recommendation
+I'm considering [product], what would you recommend?;case1_recommendation
+Looking for recommendations on the best [product]. Any suggestions?;case1_recommendation
+What are your top recommendations for [product]?;case1_recommendation
+I'm interested in [product]. What would be your recommendation?;case1_recommendation
+Can you help me decide on the right [product]? What's your recommendation?;case1_recommendation
+I'm considering purchasing [product]. What's your recommendation?;case1_recommendation
+I would like to purchase a [product], please.;case2_placeOrder
+Could you assist me in ordering a [product]?;case2_placeOrder
+I'm interested in buying a [product], can you help me with that?;case2_placeOrder
+Please add a [product] to my shopping cart.;case2_placeOrder
+I would love to order a [product] from your store.;case2_placeOrder
+Can I place an order for a [product], please?;case2_placeOrder
+I'm in need of a [product]. Can I order it through you?;case2_placeOrder
+I would like to proceed with the purchase of a [product].;case2_placeOrder
+May I request to buy a [product] from your inventory?;case2_placeOrder
+I'm looking to order a [product]. Is it available?;case2_placeOrder
+Is it possible to order a [product] from your online store?;case2_placeOrder
+I'd like to order a [product]. How can I do that?;case2_placeOrder
+I'm ready to make a purchase for a [product]. What's the next step?;case2_placeOrder
+Can you guide me on how to order a [product] from your website?;case2_placeOrder
+I have decided to buy a [product]. Can you assist me with the process?;case2_placeOrder
 Can I speak with a store manager?;case3_conntactHuman
 Transfer me to an employee, please.;case3_conntactHuman
 I need to speak with someone in charge.;case3_conntactHuman
 Get me a store representative on the line.;case3_conntactHuman
 Can I talk to a real person?;case3_conntactHuman
-I want to speak with the manager immediately.;case3_conntactHuman
 I need to speak with someone who can assist me.;case3_conntactHuman
 Transfer me to a customer service representative.;case3_conntactHuman
 Can I have an employee call me back?;case3_conntactHuman
 I would like to speak to the manager on duty.;case3_conntactHuman
-Connect me with a store associate, please.;case3_conntactHuman
-Please put me in touch with a representative.;case3_conntactHuman
-I need to talk to a human being.;case3_conntactHuman
-I need to speak to someone in management.;case3_conntactHuman
 Can I have someone from the store contact me?;case3_conntactHuman
 Please get me in touch with a customer support representative.;case3_conntactHuman
 Can you connect me with a live person?;case3_conntactHuman
 I want to speak with someone who can help me with my purchase.;case3_conntactHuman
-I need to speak with someone about an issue I'm having.;case3_conntactHuman
-Please transfer me to a supervisor.;case3_conntactHuman
 Can I have an employee come to the phone?;case3_conntactHuman
 I need to speak with someone in authority.;case3_conntactHuman
 Can I speak with a manager or supervisor?;case3_conntactHuman

@@ -93,9 +93,11 @@ pandas
 matplotlib
 plotly
 scipy
+pyjwt
 scikit-learn
 asyncio
 motor
 quart
 quart-cors
 httpx
+flask-cors
