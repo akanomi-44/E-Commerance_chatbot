@@ -63,10 +63,8 @@ class semanticCollection:
         'Content-Type': 'application/json'
         }
         async with httpx.AsyncClient() as client:
-            async with session.post(url, data=payload, headers=headers) as response:
-                result = await response.json()
-                return result
-
+            response= await client.post(url, data=payload, headers=headers)
+            return response.json()        
 
     async def semanticSearch(self, text,returnHeader, n = 1):
         """return a table (list of list) with returnHeader as column and n as numbers of row, sorted by similarity"""
