@@ -3,7 +3,7 @@ import hmac
 import hashlib
 import asyncio
 
-from .requestHandler import handle_case1, handle_case3, handle_case2, handle_default, send_webhook_message
+from .requestHandler import handle_case1, handle_case3, handle_case2,handle_case4, handle_default, send_webhook_message
 from .semanticHandler import semanticCollection 
 
 from config import Config
@@ -18,7 +18,8 @@ async def request_classifyer(message):
         case_mapping = {
             "case1_recommendation": "case_1",
             "case2_placeOrder": "case_2",
-            "case3_conntactHuman": "case_3"
+            "case3_conntactHuman": "case_3",
+            "case4_getLocation": "case_4"
         }
         case_no = result[0][0]
         if case_no in case_mapping:
@@ -130,6 +131,10 @@ async def handle_facebook_message(user_id, page_id, message):
                 return await asyncio.gather(send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook), send_message(user_id , page_id, response, access_token))
             else:
                 return await send_message(user_id , page_id, response, access_token)
+        case "case_4":
+            location = await db.find_documents("pages", {'page_id': page_id})
+            response = handle_case4(location)
+            return await send_message(user_id , page_id, response, access_token)
         case "default":
             response = handle_default(message, field=field)
             return await send_message(user_id , page_id, response, access_token)

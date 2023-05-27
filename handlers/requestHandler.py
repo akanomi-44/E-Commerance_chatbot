@@ -11,6 +11,11 @@ def handle_case2(message):
 def handle_case3(message):
     return "I have notified Store Owner. In the meantime if you have any questions please let me know"
     
+def handle_case4(location):
+    if location != "":
+        return f"Our shop is located at {location}"
+    return f"We don't have an official location yet, but we're working on it. Stay tuned for updates on our website and social media. Thank you for your interest!"
+
 def handle_default(message, field):
     prompt = f"User: {message}. Give me a response if related to {field} else answer only 'No'"
     message = get_gpt3_response(prompt)

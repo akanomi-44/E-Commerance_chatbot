@@ -1,7 +1,13 @@
 # ADD template to db server
 import db_helper as db
+from config import Config
 
-uri = ""
+
+host = Config.DB_CLUSTER
+userName = Config.DB_USER_NAME
+password = Config.DB_PASS
+uri = f"mongodb+srv://{userName}:{password}@{host}/?retryWrites=true&compressors=zlib"
+
 
 def templateRead(name):
     inputData = []
@@ -19,9 +25,10 @@ def templateRead(name):
 
 if __name__ == "__main__":
     # template
+    print(uri)
     template_server = db.Server(dbName="Store", collectionName="templateReq",clientName=uri)
     template_server.embField = "req"
-    if 0:
+    if 1:
         if 1:
             template_server.dropCollection()
 

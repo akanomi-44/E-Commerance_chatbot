@@ -51,3 +51,11 @@ I need to talk to someone in charge of customer service.;case3_conntactHuman
 Please put me in touch with a store manager or supervisor.;case3_conntactHuman
 I want to speak with a real person, not a chatbot.;case3_conntactHuman
 Can I have an employee assist me with my purchase?;case3_conntactHuman
+Where can I find your store?;case4_getLocation
+Could you please provide the location of the shop?;case4_getLocation
+What is the address of the store ?;case4_getLocation
+Can you tell me where the shop is located?;case4_getLocation
+Could you provide me with the location of your store ?;case4_getLocation
+Can you please tell me where the store is situated?;case4_getLocation
+Where can I find a the shop ?;case4_getLocation
+Could you give me directions to your store?;case4_getLocation
