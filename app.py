@@ -164,11 +164,12 @@ async def set_webhook_url():
     page_id = body["page_id"].strip()
     location = body["location"]
     field = body["field"]
+    shop_link = body["shop_link"]
     
     if not has_valid_ssl(page_webhook_url):
        return jsonify({"error": "Insecure request. Please use HTTPS."}), 400
     
-    document = await db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url, "location": location, "field": field}}, upsert=False, new=True)
+    document = await db.find_one_and_update("pages",{'page_id': page_id}, {'$set': {"webhook": page_webhook_url, "location": location, "field": field, "shop_link": shop_link}}, upsert=False, new=True)
     if not document: 
         return jsonify({"error": "Page Id not exist in database."}), 400
     
