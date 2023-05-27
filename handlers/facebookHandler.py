@@ -122,7 +122,6 @@ async def handle_facebook_message(user_id, page_id, message):
         case "case_3":
             response = handle_case3(message)
             if webhook:
-                send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook)
                 return await asyncio.gather(send_webhook_message(type="assistant", message=message, user_id=user_id, url=webhook), send_message(user_id , page_id, response, access_token))
             else:
                 return await send_message(user_id , page_id, response, access_token)
