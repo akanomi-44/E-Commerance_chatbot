@@ -4,9 +4,8 @@ from bson import json_util
 import json
 
 from functools import wraps
-from flask_cors import CORS
 import jwt
-import requests
+from quart_cors import cors
 from config import Config
 from db.mongo import db
 from dotenv import load_dotenv
@@ -15,7 +14,7 @@ from handlers.facebookHandler import get_facebok_user, handle_facebook_message, 
 from handlers.sslHandler import has_valid_ssl
 from quart import Quart, g, jsonify, request
 app = Quart(__name__)
-# cors = CORS(app)
+CORS = cors(app)
 
 load_dotenv()
 
