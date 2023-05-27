@@ -9,10 +9,10 @@ def get_gpt3_response(prompt):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=100,
+        max_tokens=200,
         n=1,
         stop=None,
-        temperature=0.2,
+        temperature=0.3,
     )
     res = response.choices[0].text
     return ' '.join(res.strip().split())
